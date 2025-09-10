@@ -84,7 +84,7 @@ const Hero = () => {
           ref={nameRef}
           className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_20px_#22d3ee]"
         >
-          Bedy Briliant Wijaya
+          Lorem, ipsum dolor.
         </h1>
         <p
           ref={subtitleRef}

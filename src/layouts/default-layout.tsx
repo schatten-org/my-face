@@ -65,8 +65,8 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       const { clientX, clientY } = event
-      const x = clientX - window.innerWidth / 2
-      const y = clientY - window.innerHeight / 2
+      const x = clientX - window.innerWidth / 2.5
+      const y = clientY - window.innerHeight / 2.5
       setMousePosition({ x, y })
     }
 
@@ -79,8 +79,9 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen w-full bg-gray-900 relative text-gray-50">
       <div
-        className="absolute inset-0 w-full h-fit transition-transform duration-300 ease-out"
+        className="absolute inset-0 w-full h-screen transition-transform duration-300 ease-out"
         style={{
+          background: '#0a0a23',
           backgroundImage: `
             linear-gradient(to right, rgba(168,85,247,0.15) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(168,85,247,0.15) 1px, transparent 1px),
@@ -90,7 +91,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
           transform: `translate(${mousePosition.x / 30}px, ${mousePosition.y / 30}px)`,
         }}
       >
-        <div className="absolute top-1/2 left-1/2 w-[60vmin] h-[60vmin] bg-cyan-500/20 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-1/2 left-1/2 w-[60vmin] h-[60vmin] bg-cyan-400/10 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 z-0" />
         <div className="h-screen w-full overflow-hidden absolute">
           <div className="absolute inset-0 z-0 flex justify-center items-end opacity-10">
             <img
@@ -103,7 +104,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
         </div>
 
         {mounted && children ? (
-          <div className="relative z-10">
+          <div className="relative z-0 min-h-screen flex flex-col">
             <div className="relative w-full h-full">{children}</div>
             <div className="sticky bottom-10 left-1/2 transform z-50 w-full md:w-auto">
               <DockApp />
