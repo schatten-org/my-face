@@ -1,4 +1,3 @@
-import React, { useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import {
   Briefcase,
@@ -9,20 +8,22 @@ import {
   Mail,
   User,
 } from 'lucide-react'
+import { Children, cloneElement, isValidElement, useRef } from 'react'
+import type { FC, MouseEvent, ReactElement, ReactNode } from 'react'
 import type { MotionValue } from 'framer-motion'
 
 interface DockIconProps {
   mouseX?: MotionValue<number>
-  children: React.ReactNode
+  children: ReactNode
   onClick?: () => void
   gradient?: string
 }
 
 interface DockProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
-const DockIcon: React.FC<DockIconProps> = ({ mouseX, children, onClick }) => {
+const DockIcon: FC<DockIconProps> = ({ mouseX, children, onClick }) => {
   const ref = useRef<HTMLDivElement>(null)
   const defaultMouseX = useMotionValue(Infinity)
 
@@ -47,7 +48,7 @@ const DockIcon: React.FC<DockIconProps> = ({ mouseX, children, onClick }) => {
     damping: 12,
   })
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: MouseEvent) => {
     if (onClick) {
       e.preventDefault()
       onClick()
@@ -78,28 +79,25 @@ const DockIcon: React.FC<DockIconProps> = ({ mouseX, children, onClick }) => {
   )
 }
 
-const FloatingDock: React.FC<DockProps> = ({ children }) => {
+const FloatingDock: FC<DockProps> = ({ children }) => {
   const mouseX = useMotionValue(Infinity)
 
   return (
     <motion.div
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
-      className="flex h-[70px] items-center gap-3 rounded-3xl bg-white/70 dark:bg-black/40 px-4 border border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl"
+      className="flex h-[70px] items-center gap-1 md:gap-3 rounded-3xl bg-white/70 dark:bg-black/40  md:px-4 border border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl"
       style={{
         boxShadow:
           '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)',
       }}
     >
-      {React.Children.map(children, (child) => {
-        if (React.isValidElement(child) && child.type === DockIcon) {
-          return React.cloneElement(
-            child as React.ReactElement<DockIconProps>,
-            {
-              ...(child.props as DockIconProps),
-              mouseX: mouseX,
-            },
-          )
+      {Children.map(children, (child) => {
+        if (isValidElement(child) && child.type === DockIcon) {
+          return cloneElement(child as ReactElement<DockIconProps>, {
+            ...(child.props as DockIconProps),
+            mouseX: mouseX,
+          })
         }
         return child
       })}
@@ -107,7 +105,7 @@ const FloatingDock: React.FC<DockProps> = ({ children }) => {
   )
 }
 
-const DockApp: React.FC = () => {
+const DockApp: FC = () => {
   const icons = [
     {
       id: 'hero',
