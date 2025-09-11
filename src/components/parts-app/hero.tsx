@@ -100,7 +100,7 @@ const Hero = () => {
         </p>
       </div>
 
-      <div className="absolute top-[30%] left-1/2 transform -translate-x-1/2 animate-bounce text-gray-400 text-sm tracking-widest z-20">
+      <div className="absolute top-[45%]  md:top-[30%] left-1/2 transform -translate-x-1/2 animate-bounce text-gray-400 text-sm tracking-widest z-20">
         ↓ SCROLL
       </div>
     </section>

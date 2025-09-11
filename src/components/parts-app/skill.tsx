@@ -1,4 +1,6 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, useMemo, useState } from 'react'
+
+import { useBreakpoint } from '@/hooks'
 
 type IconType =
   | 'java'
@@ -20,7 +22,11 @@ interface SkillIconProps {
 
 interface SkillConfig {
   id: string
-  orbitRadius: number
+  orbitRadius: {
+    mobile: number
+    tablet: number
+    desktop: number
+  }
   size: number
   speed: number
   iconType: IconType
@@ -32,6 +38,8 @@ interface SkillConfig {
 interface OrbitingSkillProps {
   config: SkillConfig
   angle: number
+  resolvedRadius: number
+  resolvedSize: number
 }
 
 interface GlowingOrbitPathProps {
@@ -46,57 +54,37 @@ const iconComponents: Record<
 > = {
   java: {
     component: () => (
-      <img src="/svg/logo-java.svg" alt="Java Logo" className="w-4/5 h-4/5" />
+      <img src="/svg/logo-java.svg" alt="Java" className="w-4/5 h-4/5" />
     ),
     color: '#007396',
   },
   typescript: {
     component: () => (
-      <img
-        src="/svg/logo-typescript.svg"
-        alt="TypeScript Logo"
-        className="w-full h-full"
-      />
+      <img src="/svg/logo-typescript.svg" alt="TS" className="w-full h-full" />
     ),
     color: '#3178C6',
   },
   golang: {
     component: () => (
-      <img
-        src="/svg/logo-golang.svg"
-        alt="Golang Logo"
-        className="w-full h-full"
-      />
+      <img src="/svg/logo-golang.svg" alt="Go" className="w-full h-full" />
     ),
     color: '#00ADD8',
   },
   spring: {
     component: () => (
-      <img
-        src="/svg/logo-spring.svg"
-        alt="Spring Logo"
-        className="w-full h-full"
-      />
+      <img src="/svg/logo-spring.svg" alt="Spring" className="w-full h-full" />
     ),
     color: '#6DB33F',
   },
   nestjs: {
     component: () => (
-      <img
-        src="/svg/logo-nestjs.svg"
-        alt="NestJS Logo"
-        className="w-full h-full"
-      />
+      <img src="/svg/logo-nestjs.svg" alt="NestJS" className="w-full h-full" />
     ),
     color: '#E0234E',
   },
   react: {
     component: () => (
-      <img
-        src="/svg/logo-react.svg"
-        alt="React Logo"
-        className="w-full h-full"
-      />
+      <img src="/svg/logo-react.svg" alt="React" className="w-full h-full" />
     ),
     color: '#61DAFB',
   },
@@ -104,7 +92,7 @@ const iconComponents: Record<
     component: () => (
       <img
         src="/svg/logo-postgresql.svg"
-        alt="PostgreSQL Logo"
+        alt="Postgres"
         className="w-full h-full"
       />
     ),
@@ -112,21 +100,13 @@ const iconComponents: Record<
   },
   docker: {
     component: () => (
-      <img
-        src="/svg/logo-docker.svg"
-        alt="Docker Logo"
-        className="w-full h-full"
-      />
+      <img src="/svg/logo-docker.svg" alt="Docker" className="w-full h-full" />
     ),
     color: '#2496ED',
   },
   kubernetes: {
     component: () => (
-      <img
-        src="/svg/logo-kubernetes.svg"
-        alt="Kubernetes Logo"
-        className="w-full h-full"
-      />
+      <img src="/svg/logo-kubernetes.svg" alt="K8s" className="w-full h-full" />
     ),
     color: '#326CE5',
   },
@@ -134,7 +114,7 @@ const iconComponents: Record<
     component: () => (
       <img
         src="/svg/logo-elasticsearch.svg"
-        alt="Elasticsearch Logo"
+        alt="ES"
         className="w-full h-full"
       />
     ),
@@ -151,7 +131,7 @@ SkillIcon.displayName = 'SkillIcon'
 const skillsConfig: Array<SkillConfig> = [
   {
     id: 'java',
-    orbitRadius: 100,
+    orbitRadius: { mobile: 60, tablet: 80, desktop: 100 },
     size: 50,
     speed: 1,
     iconType: 'java',
@@ -161,7 +141,7 @@ const skillsConfig: Array<SkillConfig> = [
   },
   {
     id: 'typescript',
-    orbitRadius: 100,
+    orbitRadius: { mobile: 60, tablet: 80, desktop: 100 },
     size: 50,
     speed: 1,
     iconType: 'typescript',
@@ -171,7 +151,7 @@ const skillsConfig: Array<SkillConfig> = [
   },
   {
     id: 'golang',
-    orbitRadius: 100,
+    orbitRadius: { mobile: 60, tablet: 80, desktop: 100 },
     size: 50,
     speed: 1,
     iconType: 'golang',
@@ -179,9 +159,10 @@ const skillsConfig: Array<SkillConfig> = [
     glowColor: 'cyan',
     label: 'Golang',
   },
+
   {
     id: 'spring',
-    orbitRadius: 180,
+    orbitRadius: { mobile: 120, tablet: 140, desktop: 180 },
     size: 50,
     speed: -0.6,
     iconType: 'spring',
@@ -191,7 +172,7 @@ const skillsConfig: Array<SkillConfig> = [
   },
   {
     id: 'nestjs',
-    orbitRadius: 180,
+    orbitRadius: { mobile: 120, tablet: 140, desktop: 180 },
     size: 50,
     speed: -0.6,
     iconType: 'nestjs',
@@ -201,7 +182,7 @@ const skillsConfig: Array<SkillConfig> = [
   },
   {
     id: 'react',
-    orbitRadius: 180,
+    orbitRadius: { mobile: 120, tablet: 140, desktop: 180 },
     size: 50,
     speed: -0.6,
     iconType: 'react',
@@ -209,9 +190,10 @@ const skillsConfig: Array<SkillConfig> = [
     glowColor: 'purple',
     label: 'React',
   },
+
   {
     id: 'postgresql',
-    orbitRadius: 260,
+    orbitRadius: { mobile: 180, tablet: 200, desktop: 260 },
     size: 50,
     speed: 0.4,
     iconType: 'postgresql',
@@ -221,7 +203,7 @@ const skillsConfig: Array<SkillConfig> = [
   },
   {
     id: 'docker',
-    orbitRadius: 260,
+    orbitRadius: { mobile: 180, tablet: 200, desktop: 260 },
     size: 50,
     speed: 0.4,
     iconType: 'docker',
@@ -231,7 +213,7 @@ const skillsConfig: Array<SkillConfig> = [
   },
   {
     id: 'kubernetes',
-    orbitRadius: 260,
+    orbitRadius: { mobile: 180, tablet: 200, desktop: 260 },
     size: 50,
     speed: 0.4,
     iconType: 'kubernetes',
@@ -241,7 +223,7 @@ const skillsConfig: Array<SkillConfig> = [
   },
   {
     id: 'elasticsearch',
-    orbitRadius: 260,
+    orbitRadius: { mobile: 180, tablet: 200, desktop: 260 },
     size: 50,
     speed: 0.4,
     iconType: 'elasticsearch',
@@ -251,46 +233,48 @@ const skillsConfig: Array<SkillConfig> = [
   },
 ]
 
-const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
-  const [isHovered, setIsHovered] = useState(false)
-  const { orbitRadius, size, iconType, label } = config
+const OrbitingSkill = memo(
+  ({ config, angle, resolvedRadius, resolvedSize }: OrbitingSkillProps) => {
+    const [isHovered, setIsHovered] = useState(false)
+    const { iconType, label } = config
 
-  const x = Math.cos(angle) * orbitRadius
-  const y = Math.sin(angle) * orbitRadius
+    const x = Math.cos(angle) * resolvedRadius
+    const y = Math.sin(angle) * resolvedRadius
 
-  return (
-    <div
-      className="absolute top-1/2 left-1/2 transition-all duration-300 ease-out"
-      style={{
-        width: `${size}px`,
-        height: `${size}px`,
-        transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))`,
-        zIndex: isHovered ? 20 : 10,
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    return (
       <div
-        className={`relative w-full h-full p-2 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer`}
+        className="absolute top-1/2 left-1/2 transition-all duration-300 ease-out"
         style={{
-          background: isHovered
-            ? `radial-gradient(circle, ${iconComponents[iconType].color}40, transparent 70%)`
-            : 'rgba(30,30,40,0.6)',
-          boxShadow: isHovered
-            ? `0 0 25px ${iconComponents[iconType].color}, 0 0 50px ${iconComponents[iconType].color}80`
-            : `0 0 10px rgba(0,0,0,0.6)`,
+          width: `${resolvedSize}px`,
+          height: `${resolvedSize}px`,
+          transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))`,
+          zIndex: isHovered ? 30 : 10,
         }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <SkillIcon type={iconType} />
-        {isHovered && (
-          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900/80 backdrop-blur-sm rounded text-xs text-white whitespace-nowrap pointer-events-none shadow-lg">
-            {label}
-          </div>
-        )}
+        <div
+          className={`relative w-full h-full p-2 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer`}
+          style={{
+            background: isHovered
+              ? `radial-gradient(circle, ${iconComponents[iconType].color}40, transparent 70%)`
+              : 'rgba(30,30,40,0.6)',
+            boxShadow: isHovered
+              ? `0 0 25px ${iconComponents[iconType].color}, 0 0 50px ${iconComponents[iconType].color}40`
+              : `0 0 8px rgba(0,0,0,0.6)`,
+          }}
+        >
+          <SkillIcon type={iconType} />
+          {isHovered && (
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900/80 backdrop-blur-sm rounded text-xs text-white whitespace-nowrap pointer-events-none shadow-lg z-40">
+              {label}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  )
-})
+    )
+  },
+)
 OrbitingSkill.displayName = 'OrbitingSkill'
 
 const glowColors = {
@@ -349,6 +333,7 @@ GlowingOrbitPath.displayName = 'GlowingOrbitPath'
 const Skill = () => {
   const [time, setTime] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const bp = useBreakpoint()
 
   useEffect(() => {
     if (isPaused) return
@@ -358,7 +343,7 @@ const Skill = () => {
     const animate = (currentTime: number) => {
       const deltaTime = (currentTime - lastTime) / 1000
       lastTime = currentTime
-      setTime((prevTime) => prevTime + deltaTime)
+      setTime((prev) => prev + deltaTime)
       animationFrameId = requestAnimationFrame(animate)
     }
 
@@ -366,11 +351,28 @@ const Skill = () => {
     return () => cancelAnimationFrame(animationFrameId)
   }, [isPaused])
 
-  const orbitConfigs = [
-    { radius: 100, glowColor: 'cyan' as GlowColor, delay: 0 },
-    { radius: 180, glowColor: 'purple' as GlowColor, delay: 1.2 },
-    { radius: 260, glowColor: 'pink' as GlowColor, delay: 2 },
-  ]
+  const orbitLayers = useMemo(
+    () => ({
+      mobile: [
+        { radius: 60, glowColor: 'cyan' as GlowColor, delay: 0 },
+        { radius: 120, glowColor: 'purple' as GlowColor, delay: 1.2 },
+        { radius: 180, glowColor: 'pink' as GlowColor, delay: 2 },
+      ],
+      tablet: [
+        { radius: 80, glowColor: 'cyan' as GlowColor, delay: 0 },
+        { radius: 140, glowColor: 'purple' as GlowColor, delay: 1.2 },
+        { radius: 200, glowColor: 'pink' as GlowColor, delay: 2 },
+      ],
+      desktop: [
+        { radius: 100, glowColor: 'cyan' as GlowColor, delay: 0 },
+        { radius: 180, glowColor: 'purple' as GlowColor, delay: 1.2 },
+        { radius: 260, glowColor: 'pink' as GlowColor, delay: 2 },
+      ],
+    }),
+    [],
+  )
+
+  const layers = orbitLayers[bp]
 
   return (
     <section
@@ -378,28 +380,39 @@ const Skill = () => {
       className="relative w-full min-h-screen flex justify-center items-center bg-inherit overflow-hidden"
     >
       <div
-        className="relative w-[calc(100vw-60px)] h-[calc(100vw-60px)] md:w-[650px] md:h-[650px] flex items-center justify-center"
+        className="relative w-[clamp(280px,80vw,650px)] h-[clamp(280px,80vw,650px)] flex items-center justify-center"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        <div className="w-24 h-24 rounded-full flex items-center justify-center relative shadow-[0_0_30px_#22d3ee] bg-gradient-to-br from-cyan-500/40 to-purple-500/40 backdrop-blur-md">
+        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center relative shadow-[0_0_30px_#22d3ee] bg-gradient-to-br from-cyan-500/40 to-purple-500/40 backdrop-blur-md">
           <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
           <div
             className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse"
             style={{ animationDelay: '1s' }}
           ></div>
         </div>
-        {orbitConfigs.map((config) => (
+        {layers.map((layer, idx) => (
           <GlowingOrbitPath
-            key={`path-${config.radius}`}
-            radius={config.radius}
-            glowColor={config.glowColor}
-            animationDelay={config.delay}
+            key={`path-${idx}`}
+            radius={layer.radius}
+            glowColor={layer.glowColor}
+            animationDelay={layer.delay}
           />
         ))}
         {skillsConfig.map((config) => {
+          const resolvedRadius = config.orbitRadius[bp]
+          const resolvedSize =
+            bp === 'mobile' ? Math.max(36, config.size - 12) : config.size
           const angle = time * config.speed + (config.phaseShift || 0)
-          return <OrbitingSkill key={config.id} config={config} angle={angle} />
+          return (
+            <OrbitingSkill
+              key={config.id}
+              config={config}
+              angle={angle}
+              resolvedRadius={resolvedRadius}
+              resolvedSize={resolvedSize}
+            />
+          )
         })}
       </div>
     </section>

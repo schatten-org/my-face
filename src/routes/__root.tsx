@@ -1,8 +1,9 @@
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import { lazy } from 'react'
 
 import type { QueryClient } from '@tanstack/react-query'
 
-import DefaultLayout from '@/layouts/default-layout'
+const DefaultLayout = lazy(() => import('@/layouts/default-layout'))
 
 interface MyRouterContext {
   queryClient: QueryClient
