@@ -3,6 +3,8 @@ import ScrollTrigger from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { useEffect, useRef } from 'react'
 
+import GlowLine from '@/components/ui/glowline'
+
 gsap.registerPlugin(ScrollTrigger)
 
 const Hero = () => {
@@ -103,6 +105,12 @@ const Hero = () => {
       <div className="absolute top-[45%]  md:top-[30%] left-1/2 transform -translate-x-1/2 animate-bounce text-gray-400 text-sm tracking-widest z-20">
         ↓ SCROLL
       </div>
+      <GlowLine
+        orientation="horizontal"
+        position="100%"
+        color="blue"
+        className="z-50"
+      />
     </section>
   )
 }

@@ -4,7 +4,6 @@ import Lenis from 'lenis'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { DockApp } from '@/components/fragments'
-import { RippleEffectSpinner } from '@/components/ui/loading-spinner'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -14,12 +13,9 @@ type DefaultLayoutProps = {
 
 const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   const personRef = useRef<HTMLImageElement | null>(null)
-  const [mounted, setMounted] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 500)
-
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -33,7 +29,6 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
     requestAnimationFrame(raf)
 
     return () => {
-      clearTimeout(timer)
       lenis.destroy()
     }
   }, [])
@@ -102,19 +97,12 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
             />
           </div>
         </div>
-
-        {mounted && children ? (
-          <div className="relative z-0 min-h-screen flex flex-col">
-            <div className="relative w-full h-full">{children}</div>
-            <div className="sticky bottom-10 left-1/2 transform z-50 w-full md:w-auto">
-              <DockApp />
-            </div>
+        <div className="relative z-0 min-h-screen flex flex-col">
+          <div className="relative w-full h-full">{children}</div>
+          <div className="sticky bottom-10 left-1/2 transform z-50 w-full md:w-auto">
+            <DockApp />
           </div>
-        ) : (
-          <div className="flex justify-center items-start h-screen py-20 relative">
-            <RippleEffectSpinner />
-          </div>
-        )}
+        </div>
       </div>
     </div>
   )

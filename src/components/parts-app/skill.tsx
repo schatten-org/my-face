@@ -1,6 +1,12 @@
 import React, { memo, useEffect, useMemo, useState } from 'react'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 
+import GlitchVault from '@/components/ui/glitchvault'
 import { useBreakpoint } from '@/hooks'
+import GlowLine from '@/components/ui/glowline'
+
+gsap.registerPlugin(ScrollTrigger)
 
 type IconType =
   | 'java'
@@ -331,25 +337,10 @@ const GlowingOrbitPath = memo(
 GlowingOrbitPath.displayName = 'GlowingOrbitPath'
 
 const Skill = () => {
+  const headingRef = React.useRef<HTMLHeadingElement | null>(null)
   const [time, setTime] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const bp = useBreakpoint()
-
-  useEffect(() => {
-    if (isPaused) return
-    let animationFrameId: number
-    let lastTime = performance.now()
-
-    const animate = (currentTime: number) => {
-      const deltaTime = (currentTime - lastTime) / 1000
-      lastTime = currentTime
-      setTime((prev) => prev + deltaTime)
-      animationFrameId = requestAnimationFrame(animate)
-    }
-
-    animationFrameId = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(animationFrameId)
-  }, [isPaused])
 
   const orbitLayers = useMemo(
     () => ({
@@ -374,47 +365,103 @@ const Skill = () => {
 
   const layers = orbitLayers[bp]
 
+  useEffect(() => {
+    if (isPaused) return
+    let animationFrameId: number
+    let lastTime = performance.now()
+
+    const animate = (currentTime: number) => {
+      const deltaTime = (currentTime - lastTime) / 1000
+      lastTime = currentTime
+      setTime((prev) => prev + deltaTime)
+      animationFrameId = requestAnimationFrame(animate)
+    }
+
+    animationFrameId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(animationFrameId)
+  }, [isPaused])
+
+  useEffect(() => {
+    if (headingRef.current) {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: headingRef.current,
+          start: 'top 80%',
+        },
+      })
+
+      tl.fromTo(
+        headingRef.current,
+        { opacity: 0, y: 40, filter: 'blur(6px)' },
+        {
+          opacity: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: 1,
+          ease: 'power3.out',
+        },
+      )
+    }
+  }, [])
+
   return (
-    <section
-      id="skills"
-      className="relative w-full min-h-screen flex justify-center items-center bg-inherit overflow-hidden"
-    >
-      <div
-        className="relative w-[clamp(280px,80vw,650px)] h-[clamp(280px,80vw,650px)] flex items-center justify-center"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
+    <section id="skills" className="relative text-center">
+      <GlitchVault
+        className="w-full border border-slate-800 rounded-xl bg-slate-900/50 backdrop-blur-sm"
+        glitchColor="#22d3ee"
+        glitchRadius={100}
       >
-        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center relative shadow-[0_0_30px_#22d3ee] bg-gradient-to-br from-cyan-500/40 to-purple-500/40 backdrop-blur-md">
-          <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
+        <h2
+          ref={headingRef}
+          className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_10px_#9333ea] mb-20 md:mb-6 mt-6 md:mt-24"
+        >
+          My Skills
+        </h2>
+        <div className="w-full min-h-screen flex flex-col justify-start items-center">
           <div
-            className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse"
-            style={{ animationDelay: '1s' }}
-          ></div>
+            className="relative w-[clamp(280px,80vw,650px)] h-[clamp(280px,80vw,650px)] flex items-center justify-center"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center relative shadow-[0_0_30px_#22d3ee] bg-gradient-to-br from-cyan-500/40 to-purple-500/40 backdrop-blur-md">
+              <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
+              <div
+                className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse"
+                style={{ animationDelay: '1s' }}
+              ></div>
+            </div>
+            {layers.map((layer, idx) => (
+              <GlowingOrbitPath
+                key={`path-${idx}`}
+                radius={layer.radius}
+                glowColor={layer.glowColor}
+                animationDelay={layer.delay}
+              />
+            ))}
+            {skillsConfig.map((config) => {
+              const resolvedRadius = config.orbitRadius[bp]
+              const resolvedSize =
+                bp === 'mobile' ? Math.max(36, config.size - 12) : config.size
+              const angle = time * config.speed + (config.phaseShift || 0)
+              return (
+                <OrbitingSkill
+                  key={config.id}
+                  config={config}
+                  angle={angle}
+                  resolvedRadius={resolvedRadius}
+                  resolvedSize={resolvedSize}
+                />
+              )
+            })}
+          </div>
         </div>
-        {layers.map((layer, idx) => (
-          <GlowingOrbitPath
-            key={`path-${idx}`}
-            radius={layer.radius}
-            glowColor={layer.glowColor}
-            animationDelay={layer.delay}
-          />
-        ))}
-        {skillsConfig.map((config) => {
-          const resolvedRadius = config.orbitRadius[bp]
-          const resolvedSize =
-            bp === 'mobile' ? Math.max(36, config.size - 12) : config.size
-          const angle = time * config.speed + (config.phaseShift || 0)
-          return (
-            <OrbitingSkill
-              key={config.id}
-              config={config}
-              angle={angle}
-              resolvedRadius={resolvedRadius}
-              resolvedSize={resolvedSize}
-            />
-          )
-        })}
-      </div>
+      </GlitchVault>
+      <GlowLine
+        orientation="horizontal"
+        position="100%"
+        color="blue"
+        className="z-50"
+      />
     </section>
   )
 }

@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
+import { useEffect, useRef } from 'react'
+
+import GlowLine from '@/components/ui/glowline'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -68,14 +70,20 @@ const About = () => {
           my music taste has no boundaries 🎧).
           <br />
           <br />I also have a soft spot for{' '}
-          <span className="text-cyan-300">history books</span> there’s
-          something fascinating about digging into how the world ended up the
-          way it is. And lately, I’ve been learning{' '}
+          <span className="text-cyan-300">history books</span> there’s something
+          fascinating about digging into how the world ended up the way it is.
+          And lately, I’ve been learning{' '}
           <span className="text-pink-400">Japanese</span> step by step, hoping
           one day I can watch anime and sing along to J-pop without ever needing
           subtitles again (a dream, but we’ll get there 😂).
         </p>
       </div>
+      <GlowLine
+        orientation="horizontal"
+        position="100%"
+        color="purple"
+        className="z-50"
+      />
     </section>
   )
 }
