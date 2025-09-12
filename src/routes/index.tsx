@@ -9,6 +9,7 @@ const Hero = lazy(() => import('@/components/parts-app/hero'))
 const Projects = lazy(() => import('@/components/parts-app/project'))
 const Experience = lazy(() => import('@/components/parts-app/experience'))
 const Education = lazy(() => import('@/components/parts-app/education'))
+const Contact = lazy(() => import('@/components/parts-app/contact'))
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -23,6 +24,7 @@ export default function App() {
       <Projects />
       <Experience />
       <Education />
+      <Contact />
     </Fragment>
   )
 }
