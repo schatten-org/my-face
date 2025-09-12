@@ -59,7 +59,7 @@ const DockIcon: FC<DockIconProps> = ({ mouseX, children, onClick }) => {
     <motion.div
       ref={ref}
       style={{ width }}
-      className="flex aspect-square items-center justify-center rounded-2xl bg-white/90 dark:bg-gray-800/90 shadow-lg hover:shadow-xl transition-shadow backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50"
+      className="flex aspect-square items-center justify-center rounded-2xl bg-gray-800/90 shadow-lg hover:shadow-xl transition-shadow backdrop-blur-sm border border-gray-700/50"
     >
       <span
         className="flex h-full w-full items-center justify-center cursor-pointer"
@@ -86,7 +86,7 @@ const FloatingDock: FC<DockProps> = ({ children }) => {
     <motion.div
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
-      className="flex h-[70px] items-center gap-1 md:gap-3 rounded-3xl bg-white/70 dark:bg-black/40 px-2 md:px-4 border border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl"
+      className="flex h-[70px] items-center gap-1 md:gap-3 rounded-3xl bg-black/40 px-2 md:px-4 border border-white/10 backdrop-blur-xl shadow-2xl"
       style={{
         boxShadow:
           '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)',
