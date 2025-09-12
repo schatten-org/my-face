@@ -2,6 +2,7 @@ import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import { useEffect, useRef } from 'react'
 
+import TextHighlighter from '@/components/ui/text-highlighter'
 import GlowLine from '@/components/ui/glowline'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -56,26 +57,51 @@ const About = () => {
         </h2>
         <p
           ref={textRef}
-          className="text-gray-300 leading-relaxed text-base md:text-lg"
+          className="text-gray-300 leading-loose text-base md:text-lg"
         >
           Hey! I’m{' '}
-          <span className="text-cyan-400 font-semibold">
+          <TextHighlighter
+            highlightColor="linear-gradient(to right, #22d3ee, #9333ea)"
+            className="font-semibold text-white"
+          >
             Bedy Briliant Wijaya
-          </span>
+          </TextHighlighter>
           , but most people just call me{' '}
-          <span className="text-purple-400">Bedy</span>. By day I’m a{' '}
-          <span className="text-pink-400">Software Engineer</span>, and by night
-          you’ll probably find me watching anime, reading fiction, or vibing to
-          playlists that jump from lo-fi beats all the way to heavy metal (yup,
-          my music taste has no boundaries 🎧).
+          <TextHighlighter
+            highlightColor="linear-gradient(to right, #9333ea, #ec4899)"
+            className="font-semibold text-white"
+          >
+            Bedy
+          </TextHighlighter>
+          . By day I’m a{' '}
+          <TextHighlighter
+            highlightColor="linear-gradient(to right, #ec4899, #22d3ee)"
+            className="font-semibold text-white"
+          >
+            Software Engineer
+          </TextHighlighter>
+          , and by night you’ll probably find me watching anime, reading
+          fiction, or vibing to playlists that jump from lo-fi beats all the way
+          to heavy metal (yup, my music taste has no boundaries 🎧).
           <br />
           <br />I also have a soft spot for{' '}
-          <span className="text-cyan-300">history books</span> there’s something
-          fascinating about digging into how the world ended up the way it is.
-          And lately, I’ve been learning{' '}
-          <span className="text-pink-400">Japanese</span> step by step, hoping
-          one day I can watch anime and sing along to J-pop without ever needing
-          subtitles again (a dream, but we’ll get there 😂).
+          <TextHighlighter
+            highlightColor="linear-gradient(to right, #22d3ee, #9333ea)"
+            className="font-semibold text-white"
+          >
+            history books
+          </TextHighlighter>{' '}
+          there’s something fascinating about digging into how the world ended
+          up the way it is. And lately, I’ve been learning{' '}
+          <TextHighlighter
+            highlightColor="linear-gradient(to right, #ec4899, #22d3ee)"
+            className="font-semibold text-white"
+          >
+            Japanese
+          </TextHighlighter>{' '}
+          step by step, hoping one day I can watch anime and sing along to J-pop
+          without ever needing subtitles again (a dream, but we’ll get there
+          😂).
         </p>
       </div>
       <GlowLine

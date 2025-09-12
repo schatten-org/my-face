@@ -4,6 +4,9 @@ import Lenis from 'lenis'
 import { useEffect, useRef } from 'react'
 
 import GlowLine from '@/components/ui/glowline'
+import ParticleText from '@/components/ui/particle'
+import TypewriterText from '@/components/ui/typewriter'
+import GlitchText from '@/components/ui/glitch'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -80,24 +83,43 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gray-900/80 z-0 opacity-10" />
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl animate-pulse" />
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
-      <div ref={heroRef} className="relative text-center z-10 px-6">
+      <div
+        ref={heroRef}
+        className="relative text-center z-10 px-6 flex flex-col items-center"
+      >
         <h1
           ref={nameRef}
-          className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_20px_#22d3ee]"
+          aria-label="Bedy Briliant Wijaya"
+          className="text-center"
         >
-          Bedy Briliant Wijaya
+          <ParticleText
+            text="Bedy Briliant Wijaya"
+            particleCount={150}
+            particleColor="#22d3ee"
+          />
         </h1>
         <p
+          aria-label='"Software Engineer | Anime Enjoyer | Fiction Aficionado"'
           ref={subtitleRef}
-          className="mt-4 text-lg md:text-2xl text-gray-300 tracking-wide font-light"
         >
-          Software Engineer | Anime Enjoyer | Fiction Aficionado
+          <GlitchText speed={3.5}>
+            Software Engineer | Anime Enjoyer | Fiction Aficionado
+          </GlitchText>
         </p>
         <p
+          aria-label='"Quietly crafting code, loudly enjoying anime."'
           ref={taglineRef}
-          className="mt-2 text-sm md:text-base text-gray-400 italic"
+          className="mt-2"
         >
-          “Quietly crafting code, loudly enjoying anime.”
+          <TypewriterText
+            text="“Quietly crafting code, loudly enjoying anime.”"
+            speed={100}
+            deleteSpeed={50}
+            pauseDuration={2000}
+            loop={true}
+            showCursor={true}
+            className="text-sm text-white italic"
+          />
         </p>
       </div>
       <div className="absolute top-[45%]  md:top-[30%] left-1/2 transform -translate-x-1/2 animate-bounce text-gray-400 text-sm tracking-widest z-20">

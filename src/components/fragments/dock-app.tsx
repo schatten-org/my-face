@@ -1,4 +1,10 @@
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from 'framer-motion'
 import {
   Briefcase,
   CpuIcon,
@@ -8,7 +14,7 @@ import {
   Mail,
   User,
 } from 'lucide-react'
-import { Children, cloneElement, isValidElement, useRef } from 'react'
+import { Children, cloneElement, isValidElement, useRef, useState } from 'react'
 import type { FC, MouseEvent, ReactElement, ReactNode } from 'react'
 import type { MotionValue } from 'framer-motion'
 
@@ -16,16 +22,17 @@ interface DockIconProps {
   mouseX?: MotionValue<number>
   children: ReactNode
   onClick?: () => void
-  gradient?: string
+  label?: string
 }
 
 interface DockProps {
   children: ReactNode
 }
 
-const DockIcon: FC<DockIconProps> = ({ mouseX, children, onClick }) => {
+const DockIcon: FC<DockIconProps> = ({ mouseX, children, onClick, label }) => {
   const ref = useRef<HTMLDivElement>(null)
   const defaultMouseX = useMotionValue(Infinity)
+  const [isHovered, setIsHovered] = useState(false)
 
   const iconSize = 40
   const iconMagnification = 64
@@ -56,26 +63,36 @@ const DockIcon: FC<DockIconProps> = ({ mouseX, children, onClick }) => {
   }
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ width }}
-      className="flex aspect-square items-center justify-center rounded-2xl bg-gray-800/90 shadow-lg hover:shadow-xl transition-shadow backdrop-blur-sm border border-gray-700/50"
-    >
-      <span
-        className="flex h-full w-full items-center justify-center cursor-pointer"
-        onClick={(e) => {
-          handleClick(e)
-          if (onClick) {
-            e.preventDefault()
-            onClick()
-          } else {
-            e.preventDefault()
-          }
-        }}
+    <div className="relative flex flex-col items-center">
+      <motion.div
+        ref={ref}
+        style={{ width }}
+        className="flex aspect-square items-center justify-center rounded-2xl bg-gray-800/90 shadow-lg hover:shadow-xl transition-shadow backdrop-blur-sm border border-gray-700/50"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        {children}
-      </span>
-    </motion.div>
+        <span
+          className="flex h-full w-full items-center justify-center cursor-pointer"
+          onClick={handleClick}
+        >
+          {children}
+        </span>
+      </motion.div>
+
+      <AnimatePresence>
+        {isHovered && label && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 6, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+            className="absolute -top-8 px-2 py-1 rounded-md bg-black/80 text-white text-xs shadow-lg pointer-events-none whitespace-nowrap"
+          >
+            {label}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }
 
@@ -107,41 +124,13 @@ const FloatingDock: FC<DockProps> = ({ children }) => {
 
 const DockApp: FC = () => {
   const icons = [
-    {
-      id: 'hero',
-      name: 'Home',
-      component: Home,
-    },
-    {
-      id: 'about',
-      name: 'About',
-      component: User,
-    },
-    {
-      id: 'skills',
-      name: 'Skills',
-      component: CpuIcon,
-    },
-    {
-      id: 'projects',
-      name: 'Projects',
-      component: FolderGit2,
-    },
-    {
-      id: 'experience',
-      name: 'Experience',
-      component: Briefcase,
-    },
-    {
-      id: 'education',
-      name: 'Education',
-      component: GraduationCap,
-    },
-    {
-      id: 'contact',
-      name: 'Contact',
-      component: Mail,
-    },
+    { id: 'hero', name: 'Home', component: Home },
+    { id: 'about', name: 'About', component: User },
+    { id: 'skills', name: 'Skills', component: CpuIcon },
+    { id: 'projects', name: 'Projects', component: FolderGit2 },
+    { id: 'experience', name: 'Experience', component: Briefcase },
+    { id: 'education', name: 'Education', component: GraduationCap },
+    { id: 'contact', name: 'Contact', component: Mail },
   ]
 
   return (
@@ -150,6 +139,7 @@ const DockApp: FC = () => {
         {icons.map((icon) => (
           <DockIcon
             key={icon.id}
+            label={icon.name}
             onClick={() => {
               const element = document.getElementById(icon.id)
               if (element) {

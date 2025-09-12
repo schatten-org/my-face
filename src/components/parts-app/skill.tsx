@@ -1,10 +1,10 @@
-import React, { memo, useEffect, useMemo, useState } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
+import React, { memo, useEffect, useMemo, useState } from 'react'
 
 import GlitchVault from '@/components/ui/glitchvault'
-import { useBreakpoint } from '@/hooks'
 import GlowLine from '@/components/ui/glowline'
+import { useBreakpoint } from '@/hooks'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -411,12 +411,14 @@ const Skill = () => {
         glitchColor="#22d3ee"
         glitchRadius={100}
       >
-        <h2
-          ref={headingRef}
-          className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_10px_#9333ea] mb-20 md:mb-6 mt-6 md:mt-24"
-        >
-          My Skills
-        </h2>
+        <div className="relative max-w-3xl mx-auto text-center z-10">
+          <h2
+            ref={headingRef}
+            className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_10px_#9333ea] mb-20 md:mb-6 mt-6 md:mt-24"
+          >
+            My Skills
+          </h2>
+        </div>
         <div className="w-full min-h-screen flex flex-col justify-start items-center">
           <div
             className="relative w-[clamp(280px,80vw,650px)] h-[clamp(280px,80vw,650px)] flex items-center justify-center"
@@ -459,7 +461,7 @@ const Skill = () => {
       <GlowLine
         orientation="horizontal"
         position="100%"
-        color="blue"
+        color="purple"
         className="z-50"
       />
     </section>
