@@ -1,6 +1,13 @@
-'use client'
+import {
+  Forklift,
+  GraduationCap,
+  Landmark,
+  Newspaper,
+  Smartphone,
+  Sparkles,
+  TrainFront,
+} from 'lucide-react'
 import React from 'react'
-import { Cpu, GraduationCap, LayoutDashboard, Smartphone } from 'lucide-react'
 import type { FC, ReactNode, SVGProps } from 'react'
 
 import GlowLine from '@/components/ui/glowline'
@@ -14,6 +21,94 @@ interface BentoGridProps {
   className?: string
 }
 
+interface BentoCardProps {
+  name: string
+  className: string
+  background: ReactNode
+  Icon: React.ElementType
+  description: string
+  href: string
+  cta: string
+}
+
+type Project = {
+  Icon: FC<SVGProps<SVGSVGElement>>
+  name: string
+  description: string
+  href: string
+  cta: string
+  background: ReactNode
+}
+
+const projects: Array<Project> = [
+  {
+    Icon: Smartphone,
+    name: 'Super App POLRI',
+    description:
+      'Mobile app for Indonesian National Police with millions of downloads. Focus on scalability, security & performance.',
+    href: 'https://play.google.com/store/apps/details?id=superapps.polri.presisi.presisi&hl=id',
+    cta: 'See App',
+    background: (
+      <div className="absolute inset-0 bg-cyan-950/30 blur-2xl animate-pulse" />
+    ),
+  },
+  {
+    Icon: Newspaper,
+    name: 'kuatbaca.com',
+    description:
+      'News portal with custom CMS. Features SEO optimization, ad integration, analytics & user auth.',
+    href: 'https://kuatbaca.com',
+    cta: 'Explore Site',
+    background: (
+      <div className="absolute inset-0 bg-purple-950/30 blur-2xl animate-pulse" />
+    ),
+  },
+  {
+    Icon: GraduationCap,
+    name: "I'm Pharmachist",
+    description:
+      'E-learning platform for pharmacy students. Interactive courses, quizzes & progress tracking.',
+    href: 'https://im-pharmacist.com',
+    cta: 'See Platform',
+    background: (
+      <div className="absolute inset-0 bg-pink-950/30 blur-2xl animate-pulse" />
+    ),
+  },
+  {
+    Icon: Forklift,
+    name: 'GLID: Logistics System',
+    description:
+      'Logistics management system for POS Indonesia. Real-time tracking, route optimization & inventory control.',
+    href: 'https://www.glid.id/id',
+    cta: 'See System',
+    background: (
+      <div className="absolute inset-0 bg-indigo-950/30 blur-2xl animate-pulse" />
+    ),
+  },
+  {
+    Icon: Landmark,
+    name: 'CEISA 4.0',
+    description:
+      'Customs & excise information system for Indonesian government. Features document management, reporting & compliance tracking.',
+    href: 'https://portal.beacukai.go.id',
+    cta: 'See System',
+    background: (
+      <div className="absolute inset-0 bg-indigo-950/30 blur-2xl animate-pulse" />
+    ),
+  },
+  {
+    Icon: TrainFront,
+    name: 'Executive Dashboard',
+    description:
+      'Executive dashboard for LRT Jabodebek (PT KAI). Real-time monitoring, analytics & reporting for operations management.',
+    href: '#',
+    cta: 'See System',
+    background: (
+      <div className="absolute inset-0 bg-indigo-950/30 blur-2xl animate-pulse" />
+    ),
+  },
+]
+
 const BentoGrid: FC<BentoGridProps> = ({ children, className }) => {
   return (
     <div
@@ -25,16 +120,6 @@ const BentoGrid: FC<BentoGridProps> = ({ children, className }) => {
       {children}
     </div>
   )
-}
-
-interface BentoCardProps {
-  name: string
-  className: string
-  background: ReactNode
-  Icon: React.ElementType
-  description: string
-  href: string
-  cta: string
 }
 
 const BentoCard: FC<BentoCardProps> = ({
@@ -90,82 +175,37 @@ const BentoCard: FC<BentoCardProps> = ({
   </div>
 )
 
-type Project = {
-  Icon: FC<SVGProps<SVGSVGElement>>
-  name: string
-  description: string
-  href: string
-  cta: string
-  className: string
-  background: ReactNode
-}
-
-const projects: Array<Project> = [
-  {
-    Icon: Smartphone,
-    name: 'Super App POLRI',
-    description:
-      'Mobile app for Indonesian National Police with millions of downloads. Focus on scalability, security & performance.',
-    href: '#',
-    cta: 'View Case Study',
-    className: 'lg:col-span-2',
-    background: (
-      <div className="absolute inset-0 bg-cyan-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-  {
-    Icon: LayoutDashboard,
-    name: 'Executive Dashboard',
-    description:
-      'Business Intelligence dashboard for decision makers. PostgreSQL + Elasticsearch + data visualization.',
-    href: '#',
-    cta: 'See Demo',
-    className: 'lg:col-span-1',
-    background: (
-      <div className="absolute inset-0 bg-purple-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-  {
-    Icon: GraduationCap,
-    name: 'School Management System',
-    description:
-      'End-to-end school system: SPP payments, classes, materials, attendance & grades. Includes invoice generation.',
-    href: '#',
-    cta: 'Read More',
-    className: 'lg:col-span-1',
-    background: (
-      <div className="absolute inset-0 bg-pink-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-  {
-    Icon: Cpu,
-    name: 'Cloud & Infra Projects',
-    description:
-      'Microservices deployed with Docker & Kubernetes. CI/CD pipelines (Jenkins) & scalable infra setup.',
-    href: '#',
-    cta: 'Explore Infra',
-    className: 'lg:col-span-2',
-    background: (
-      <div className="absolute inset-0 bg-indigo-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-]
-
-export default function Projects() {
+const Projects = () => {
   return (
-    <section
-      id="projects"
-      className="relative w-full min-h-screen py-20 px-6 bg-black"
-    >
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_20px_#9333EA] mb-16">
-          ⚡ Featured Projects
-        </h2>
-        <BentoGrid>
-          {projects.map((project, idx) => (
-            <BentoCard key={idx} {...project} />
-          ))}
-        </BentoGrid>
+    <section id="projects" className="relative">
+      <div className="w-full min-h-screen flex flex-col items-center justify-center py-12 md:py-20 gap-y-10">
+        <div className="relative max-w-3xl mx-auto text-center z-10 space-y-3">
+          <div className="flex items-center justify-center gap-3">
+            <Sparkles className="h-8 w-8 text-cyan-400 drop-shadow-[0_0_8px_#06b6d4]" />
+            <h2 className="projects-title text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_20px_#9333EA]">
+              Projects
+            </h2>
+          </div>
+          <p className="projects-desc mt-3 text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
+            A selection of impactful projects showcasing scalability, security,
+            and performance across industries.
+          </p>
+        </div>
+        <div className="relative max-w-7xl min-h-fit px-2 md:px-0 mx-auto">
+          <BentoGrid>
+            {projects.map((project, idx) => {
+              const pos = (idx % 4) + 1
+              const isBig = pos === 1 || pos === 4
+              return (
+                <BentoCard
+                  key={idx}
+                  className={isBig ? 'lg:col-span-2' : 'lg:col-span-1'}
+                  {...project}
+                />
+              )
+            })}
+          </BentoGrid>
+        </div>
       </div>
       <GlowLine
         orientation="horizontal"
@@ -176,3 +216,5 @@ export default function Projects() {
     </section>
   )
 }
+
+export default Projects

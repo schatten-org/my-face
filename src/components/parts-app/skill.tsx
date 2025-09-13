@@ -1,6 +1,7 @@
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
-import React, { memo, useEffect, useMemo, useState } from 'react'
+import { Sparkles } from 'lucide-react'
 
 import GlitchVault from '@/components/ui/glitchvault'
 import GlowLine from '@/components/ui/glowline'
@@ -22,17 +23,9 @@ type IconType =
 
 type GlowColor = 'cyan' | 'purple' | 'pink'
 
-interface SkillIconProps {
-  type: IconType
-}
-
 interface SkillConfig {
   id: string
-  orbitRadius: {
-    mobile: number
-    tablet: number
-    desktop: number
-  }
+  orbitRadius: { mobile: number; tablet: number; desktop: number }
   size: number
   speed: number
   iconType: IconType
@@ -48,10 +41,22 @@ interface OrbitingSkillProps {
   resolvedSize: number
 }
 
-interface GlowingOrbitPathProps {
-  radius: number
-  glowColor?: GlowColor
-  animationDelay?: number
+const glowColors = {
+  cyan: {
+    primary: 'rgba(34, 211, 238, 0.6)',
+    secondary: 'rgba(34, 211, 238, 0.25)',
+    border: 'rgba(34, 211, 238, 0.4)',
+  },
+  purple: {
+    primary: 'rgba(168, 85, 247, 0.6)',
+    secondary: 'rgba(168, 85, 247, 0.25)',
+    border: 'rgba(168, 85, 247, 0.4)',
+  },
+  pink: {
+    primary: 'rgba(236, 72, 153, 0.6)',
+    secondary: 'rgba(236, 72, 153, 0.25)',
+    border: 'rgba(236, 72, 153, 0.4)',
+  },
 }
 
 const iconComponents: Record<
@@ -72,13 +77,21 @@ const iconComponents: Record<
   },
   golang: {
     component: () => (
-      <img src="/svg/logo-golang.svg" alt="Go" className="w-full h-full" />
+      <img
+        src="/svg/logo-golang.svg"
+        alt="Go"
+        className="w-full h-full bg-white rounded-full"
+      />
     ),
     color: '#00ADD8',
   },
   spring: {
     component: () => (
-      <img src="/svg/logo-spring.svg" alt="Spring" className="w-full h-full" />
+      <img
+        src="/svg/logo-spring.svg"
+        alt="Spring"
+        className="w-full h-full bg-white rounded-full"
+      />
     ),
     color: '#6DB33F',
   },
@@ -127,12 +140,6 @@ const iconComponents: Record<
     color: '#F1502F',
   },
 }
-
-const SkillIcon = memo(({ type }: SkillIconProps) => {
-  const IconComponent = iconComponents[type].component
-  return <IconComponent />
-})
-SkillIcon.displayName = 'SkillIcon'
 
 const skillsConfig: Array<SkillConfig> = [
   {
@@ -239,6 +246,12 @@ const skillsConfig: Array<SkillConfig> = [
   },
 ]
 
+const SkillIcon = memo(({ type }: { type: IconType }) => {
+  const IconComponent = iconComponents[type].component
+  return <IconComponent />
+})
+SkillIcon.displayName = 'SkillIcon'
+
 const OrbitingSkill = memo(
   ({ config, angle, resolvedRadius, resolvedSize }: OrbitingSkillProps) => {
     const [isHovered, setIsHovered] = useState(false)
@@ -249,7 +262,7 @@ const OrbitingSkill = memo(
 
     return (
       <div
-        className="absolute top-1/2 left-1/2 transition-all duration-300 ease-out"
+        className="absolute top-1/2 left-1/2 transition-transform duration-300 ease-out"
         style={{
           width: `${resolvedSize}px`,
           height: `${resolvedSize}px`,
@@ -262,6 +275,7 @@ const OrbitingSkill = memo(
         <div
           className={`relative w-full h-full p-2 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer`}
           style={{
+            transform: isHovered ? 'scale(1.2)' : 'scale(1)',
             background: isHovered
               ? `radial-gradient(circle, ${iconComponents[iconType].color}40, transparent 70%)`
               : 'rgba(30,30,40,0.6)',
@@ -272,7 +286,7 @@ const OrbitingSkill = memo(
         >
           <SkillIcon type={iconType} />
           {isHovered && (
-            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900/80 backdrop-blur-sm rounded text-xs text-white whitespace-nowrap pointer-events-none shadow-lg z-40">
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900/80 backdrop-blur-sm rounded text-xs text-white whitespace-nowrap pointer-events-none shadow-lg z-40 animate-fadeIn">
               {label}
             </div>
           )}
@@ -283,32 +297,17 @@ const OrbitingSkill = memo(
 )
 OrbitingSkill.displayName = 'OrbitingSkill'
 
-const glowColors = {
-  cyan: {
-    primary: 'rgba(34, 211, 238, 0.6)',
-    secondary: 'rgba(34, 211, 238, 0.25)',
-    border: 'rgba(34, 211, 238, 0.4)',
-  },
-  purple: {
-    primary: 'rgba(168, 85, 247, 0.6)',
-    secondary: 'rgba(168, 85, 247, 0.25)',
-    border: 'rgba(168, 85, 247, 0.4)',
-  },
-  pink: {
-    primary: 'rgba(236, 72, 153, 0.6)',
-    secondary: 'rgba(236, 72, 153, 0.25)',
-    border: 'rgba(236, 72, 153, 0.4)',
-  },
-}
-
 const GlowingOrbitPath = memo(
   ({
     radius,
     glowColor = 'cyan',
     animationDelay = 0,
-  }: GlowingOrbitPathProps) => {
+  }: {
+    radius: number
+    glowColor?: GlowColor
+    animationDelay?: number
+  }) => {
     const colors = glowColors[glowColor]
-
     return (
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
@@ -319,7 +318,6 @@ const GlowingOrbitPath = memo(
           style={{
             background: `radial-gradient(circle, transparent 30%, ${colors.secondary} 70%, ${colors.primary} 100%)`,
             boxShadow: `0 0 60px ${colors.primary}, inset 0 0 60px ${colors.secondary}`,
-            animation: 'pulse 4s ease-in-out infinite',
             animationDelay: `${animationDelay}s`,
           }}
         />
@@ -337,7 +335,8 @@ const GlowingOrbitPath = memo(
 GlowingOrbitPath.displayName = 'GlowingOrbitPath'
 
 const Skill = () => {
-  const headingRef = React.useRef<HTMLHeadingElement | null>(null)
+  const headingRef = useRef<HTMLHeadingElement | null>(null)
+  const descRef = useRef<HTMLParagraphElement | null>(null)
   const [time, setTime] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const bp = useBreakpoint()
@@ -362,100 +361,99 @@ const Skill = () => {
     }),
     [],
   )
-
   const layers = orbitLayers[bp]
 
   useEffect(() => {
-    if (isPaused) return
-    let animationFrameId: number
-    let lastTime = performance.now()
-
-    const animate = (currentTime: number) => {
-      const deltaTime = (currentTime - lastTime) / 1000
-      lastTime = currentTime
-      setTime((prev) => prev + deltaTime)
-      animationFrameId = requestAnimationFrame(animate)
+    const update = () => {
+      if (!isPaused) setTime(performance.now() / 1000)
     }
-
-    animationFrameId = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(animationFrameId)
+    gsap.ticker.add(update)
+    return () => gsap.ticker.remove(update)
   }, [isPaused])
 
   useEffect(() => {
-    if (headingRef.current) {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: headingRef.current,
-          start: 'top 80%',
-        },
-      })
-
-      tl.fromTo(
+    if (headingRef.current && descRef.current) {
+      gsap.fromTo(
         headingRef.current,
-        { opacity: 0, y: 40, filter: 'blur(6px)' },
-        {
-          opacity: 1,
-          y: 0,
-          filter: 'blur(0px)',
-          duration: 1,
-          ease: 'power3.out',
-        },
+        { opacity: 0, y: -20, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' },
+      )
+      gsap.fromTo(
+        descRef.current,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: 'power2.out' },
       )
     }
   }, [])
 
   return (
-    <section id="skills" className="relative text-center">
+    <section id="skills" className="relative">
       <GlitchVault
-        className="w-full border border-slate-800 rounded-xl bg-slate-900/50 backdrop-blur-sm"
-        glitchColor="#22d3ee"
+        className="relative w-full min-h-screen border border-slate-800 rounded-xl bg-slate-900/50 backdrop-blur-sm py-12 flex flex-col items-center justify-center gap-10"
+        glitchColor="linear-gradient(circle at 50% 50%, #9333ea, #22d3ee)"
         glitchRadius={100}
       >
-        <div className="relative max-w-3xl mx-auto text-center z-10">
-          <h2
-            ref={headingRef}
-            className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_10px_#9333ea] mb-20 md:mb-6 mt-6 md:mt-24"
-          >
-            My Skills
-          </h2>
-        </div>
-        <div className="w-full min-h-screen flex flex-col justify-start items-center">
-          <div
-            className="relative w-[clamp(280px,80vw,650px)] h-[clamp(280px,80vw,650px)] flex items-center justify-center"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
-            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center relative shadow-[0_0_30px_#22d3ee] bg-gradient-to-br from-cyan-500/40 to-purple-500/40 backdrop-blur-md">
-              <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
-              <div
-                className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse"
-                style={{ animationDelay: '1s' }}
-              ></div>
-            </div>
-            {layers.map((layer, idx) => (
-              <GlowingOrbitPath
-                key={`path-${idx}`}
-                radius={layer.radius}
-                glowColor={layer.glowColor}
-                animationDelay={layer.delay}
-              />
-            ))}
-            {skillsConfig.map((config) => {
-              const resolvedRadius = config.orbitRadius[bp]
-              const resolvedSize =
-                bp === 'mobile' ? Math.max(36, config.size - 12) : config.size
-              const angle = time * config.speed + (config.phaseShift || 0)
-              return (
-                <OrbitingSkill
-                  key={config.id}
-                  config={config}
-                  angle={angle}
-                  resolvedRadius={resolvedRadius}
-                  resolvedSize={resolvedSize}
-                />
-              )
-            })}
+        <div className="relative max-w-3xl mx-auto text-center z-10 space-y-3">
+          <div className="flex items-center justify-center gap-2">
+            <Sparkles className="w-8 h-8 text-cyan-400 drop-shadow-[0_0_8px_#22d3ee]" />
+            <h2
+              ref={headingRef}
+              className="
+                text-2xl md:text-5xl font-bold text-transparent bg-clip-text 
+                bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 
+                drop-shadow-[0_0_10px_#9333ea]
+              "
+            >
+              My Skills
+            </h2>
           </div>
+
+          <p
+            ref={descRef}
+            className="text-gray-300 text-sm md:text-base max-w-xl mx-auto leading-relaxed"
+          >
+            A collection of tools, technologies, and frameworks I’ve mastered
+            and frequently use to craft modern, scalable, and delightful
+            applications.
+          </p>
+        </div>
+
+        <div
+          className="relative w-[clamp(280px,80vw,650px)] h-[clamp(280px,80vw,650px)] flex items-center justify-center mt-16 md:mt-0 mx-auto"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center relative shadow-[0_0_30px_#22d3ee] bg-gradient-to-br from-cyan-500/40 to-purple-500/40 backdrop-blur-md">
+            <div className="absolute inset-0 rounded-full bg-cyan-500/25 blur-xl animate-pulse"></div>
+            <div
+              className="absolute inset-0 rounded-full bg-purple-500/40 blur-2xl animate-pulse"
+              style={{ animationDelay: '1s' }}
+            ></div>
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-500/30 to-purple-500/30 blur-xl animate-spin-slow"></div>
+          </div>
+          {layers.map((layer, idx) => (
+            <GlowingOrbitPath
+              key={`path-${idx}`}
+              radius={layer.radius}
+              glowColor={layer.glowColor}
+              animationDelay={layer.delay}
+            />
+          ))}
+          {skillsConfig.map((config) => {
+            const resolvedRadius = config.orbitRadius[bp]
+            const resolvedSize =
+              bp === 'mobile' ? Math.max(36, config.size - 12) : config.size
+            const angle = time * config.speed + (config.phaseShift || 0)
+            return (
+              <OrbitingSkill
+                key={config.id}
+                config={config}
+                angle={angle}
+                resolvedRadius={resolvedRadius}
+                resolvedSize={resolvedSize}
+              />
+            )
+          })}
         </div>
       </GlitchVault>
       <GlowLine

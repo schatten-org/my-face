@@ -1,64 +1,76 @@
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
+import { Sparkles } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 
-import TextHighlighter from '@/components/ui/text-highlighter'
 import GlowLine from '@/components/ui/glowline'
+import TextHighlighter from '@/components/ui/text-highlighter'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const About = () => {
-  const headingRef = useRef<HTMLHeadingElement | null>(null)
-  const textRef = useRef<HTMLParagraphElement | null>(null)
+  const containerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    if (headingRef.current && textRef.current) {
+    const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: headingRef.current,
+          trigger: containerRef.current,
           start: 'top 80%',
+          once: true,
         },
       })
 
       tl.fromTo(
-        headingRef.current,
-        { opacity: 0, y: 40, filter: 'blur(6px)' },
+        '.about-heading',
+        { opacity: 0, y: 40, scale: 0.95, willChange: 'transform, opacity' },
         {
           opacity: 1,
           y: 0,
-          filter: 'blur(0px)',
-          duration: 1,
+          scale: 1,
+          duration: 0.8,
           ease: 'power3.out',
         },
       ).fromTo(
-        textRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' },
-        '-=0.5',
+        '.about-text',
+        { opacity: 0, y: 30, willChange: 'transform, opacity' },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: 'power2.out',
+        },
+        '-=0.4',
       )
-    }
+    }, containerRef)
+
+    return () => ctx.revert()
   }, [])
 
   return (
-    <section
-      id="about"
-      className="relative min-h-screen py-20 px-6 bg-gray-950 overflow-hidden"
-    >
+    <section id="about" className="relative">
       <div className="absolute inset-0 opacity-10 bg-[url('/grid.svg')] bg-cover bg-center" />
-      <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-10 right-10 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-900/50 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-10 right-10 w-72 h-72 bg-pink-900/50 rounded-full blur-3xl animate-pulse" />
 
-      <div className="relative max-w-3xl mx-auto text-center z-10">
-        <h2
-          ref={headingRef}
-          className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_10px_#9333ea] mb-6"
-        >
-          About Me
-        </h2>
-        <p
-          ref={textRef}
-          className="text-gray-300 leading-loose text-base md:text-lg"
-        >
+      <div
+        ref={containerRef}
+        className="relative max-w-3xl min-h-screen mx-auto text-center z-10 space-y-8 py-20 px-3 md:px-6"
+      >
+        <div className="flex items-center justify-center gap-2">
+          <Sparkles className="w-8 h-8 text-cyan-400 drop-shadow-[0_0_8px_#22d3ee]" />
+          <h2
+            className="
+              text-2xl md:text-5xl font-bold text-transparent bg-clip-text 
+              bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 
+              drop-shadow-[0_0_10px_#9333ea]
+            "
+          >
+            About Me
+          </h2>
+        </div>
+
+        <p className="about-text text-gray-300 text-sm md:text-base max-w-full mx-auto leading-loose">
           Hey! I’m{' '}
           <TextHighlighter
             highlightColor="linear-gradient(to right, #22d3ee, #9333ea)"
@@ -91,8 +103,7 @@ const About = () => {
           >
             history books
           </TextHighlighter>{' '}
-          there’s something fascinating about digging into how the world ended
-          up the way it is. And lately, I’ve been learning{' '}
+          and lately I’ve been learning{' '}
           <TextHighlighter
             highlightColor="linear-gradient(to right, #ec4899, #22d3ee)"
             className="font-semibold text-white"
@@ -100,10 +111,10 @@ const About = () => {
             Japanese
           </TextHighlighter>{' '}
           step by step, hoping one day I can watch anime and sing along to J-pop
-          without ever needing subtitles again (a dream, but we’ll get there
-          😂).
+          without subtitles (a dream, but we’ll get there 😂).
         </p>
       </div>
+
       <GlowLine
         orientation="horizontal"
         position="100%"

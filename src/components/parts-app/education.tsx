@@ -1,31 +1,11 @@
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Sparkles } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+
 import GlowLine from '@/components/ui/glowline'
 
-export default function EducationSection() {
-  return (
-    <section
-      id="education"
-      className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-black relative overflow-hidden"
-    >
-      <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/20 via-cyan-900/10 to-pink-900/20 blur-3xl"></div>
-      <div className="relative max-w-3xl mx-auto">
-        <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-cyan-400 drop-shadow-[0_0_15px_#00faff]">
-            Education
-          </h2>
-          <p className="text-sm text-gray-400 mt-2">My academic background</p>
-        </div>
-
-        <CoderProfileCard />
-      </div>
-      <GlowLine
-        orientation="horizontal"
-        position="100%"
-        color="blue"
-        className="z-50"
-      />
-    </section>
-  )
-}
+gsap.registerPlugin(ScrollTrigger)
 
 const coderData = {
   education: {
@@ -37,7 +17,7 @@ const coderData = {
 
 const CoderProfileCard = () => {
   return (
-    <div className="max-w-2xl w-full mx-auto bg-gradient-to-r from-[#0a0f2c] to-[#120024] border-cyan-500/30 relative rounded-lg border shadow-[0_0_25px_rgba(0,255,255,0.4)] overflow-hidden">
+    <div className="edu-card max-w-2xl w-full mx-auto bg-gradient-to-r from-[#0a0f2c] to-[#120024] border-cyan-500/30 relative rounded-lg border shadow-[0_0_25px_rgba(0,255,255,0.4)] overflow-hidden">
       <div className="flex flex-row">
         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-pink-500 to-cyan-400 animate-pulse"></div>
         <div className="h-[2px] w-full bg-gradient-to-r from-cyan-400 to-transparent animate-pulse"></div>
@@ -103,3 +83,70 @@ const CoderProfileCard = () => {
     </div>
   )
 }
+
+const EducationSection = () => {
+  const sectionRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('#education h2, #education p', {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: 'power3.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: '#education',
+          start: 'top 80%',
+        },
+      })
+
+      gsap.from('#education .edu-card', {
+        opacity: 0,
+        y: 60,
+        scale: 0.95,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '#education',
+          start: 'top 75%',
+        },
+      })
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section id="education" className="relative">
+      <div
+        ref={sectionRef}
+        className="w-full min-h-fit py-20 flex flex-col items-center gap-10"
+      >
+        <div className="relative max-w-3xl mx-auto text-center z-10 space-y-3">
+          <div className="flex items-center justify-center gap-3">
+            <Sparkles className="h-8 w-8 text-cyan-400 drop-shadow-[0_0_8px_#06b6d4]" />
+            <h2 className="projects-title text-2xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_20px_#9333EA]">
+              Education Background
+            </h2>
+          </div>
+          <p className="projects-desc mt-3 text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
+            My academic journey in Informatics Engineering, laying the
+            foundation for my career in technology and software development.
+          </p>
+        </div>
+        <div className="relative max-w-7xl min-h-fit px-2 md:px-0 mx-auto">
+          <CoderProfileCard />
+        </div>
+      </div>
+      <GlowLine
+        orientation="horizontal"
+        position="100%"
+        color="blue"
+        className="z-50"
+      />
+    </section>
+  )
+}
+
+export default EducationSection

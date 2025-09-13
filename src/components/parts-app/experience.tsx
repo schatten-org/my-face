@@ -1,9 +1,88 @@
 'use client'
 
+import { Code2, Sparkles } from 'lucide-react'
 import React, { memo, useCallback, useState } from 'react'
-import { Code2, Cpu, Database, Server } from 'lucide-react'
 
 import GlowLine from '@/components/ui/glowline'
+
+type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>
+
+interface TimelineItemData {
+  id: string
+  title: string
+  company: string
+  type: string
+  duration: string
+  icon: IconType
+  responsibilities: Array<string>
+  skills: Array<string>
+}
+
+interface TimelineItemContentProps {
+  item: TimelineItemData
+}
+
+const timelineData: Array<TimelineItemData> = [
+  {
+    id: 'exp-1',
+    title: 'Full Stack Developer',
+    company: 'PT Harmonix Teknologi Peentar',
+    type: 'Full-time',
+    duration: 'January 2025 - August 2025',
+    icon: Code2,
+    responsibilities: [
+      'Contributed to Universitas Mercu Buana’s Academic Information System, focusing on master data and financial modules.',
+      'Developed back-end with Java Spring Boot and front-end with Next.js, integrating PostgreSQL, Docker, Kubernetes (K8s), and Argo CD.',
+      'Fixed bugs in Kimia Farma Mobile’s SmartStock backend (Java Spring Boot).',
+      'Enhanced system performance and reliability through efficient debugging, integration, and deployment practices.',
+      'Collaborated in an Agile team to ensure efficient, coordinated delivery.',
+    ],
+    skills: [
+      'Java',
+      'JavaScript',
+      'TypeScript',
+      'Spring Boot',
+      'Next JS',
+      'PostgreSQL',
+      'Docker',
+      'Kubernetes',
+      'Argo CD',
+      'Microservices',
+      'System Optimization',
+    ],
+  },
+  {
+    id: 'exp-2',
+    title: 'Full Stack Developer',
+    company: 'PT Nutech Integrasi',
+    type: 'Full-time',
+    duration: 'September 2023 - December 2024',
+    icon: Code2,
+    responsibilities: [
+      'Contributed to CEISA 4.0, the national customs system, enhancing automation and digitalization of import-export processes.',
+      'Developed and maintained the Executive Dashboard for LRT Jabodebek, enabling real-time monitoring and strategic decisions.',
+      'Built GLID Logistics System for PT POS Indonesia, improving package tracking and operational efficiency.',
+      'Implemented microservices and micro-frontend architecture to boost scalability and flexibility.',
+      'Applied clean architecture and reusable components to minimize long-term maintenance.',
+      'Collaborated in Agile workflows through sprint planning, code reviews, and cross-functional teamwork.',
+    ],
+    skills: [
+      'JavaScript',
+      'TypeScript',
+      'Java',
+      'React JS',
+      'Next JS',
+      'Express JS',
+      'Nest JS',
+      'Spring Boot',
+      'PostgreSQL',
+      'Docker',
+      'Microservices',
+      'Micro-frontend',
+      'Agile Methodologies',
+    ],
+  },
+]
 
 const Badge = ({
   children,
@@ -19,78 +98,11 @@ const Badge = ({
   )
 }
 
-type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>
-
-interface TimelineItemData {
-  id: string
-  title: string
-  type: string
-  duration: string
-  icon: IconType
-  responsibilities: Array<string>
-  skills: Array<string>
-}
-
-const timelineData: Array<TimelineItemData> = [
-  {
-    id: 'exp-1',
-    title: 'Backend Engineer',
-    type: 'Full-time',
-    duration: '2023 – Present',
-    icon: Server,
-    responsibilities: [
-      'Design & implement scalable APIs with Node.js, NestJS, and PostgreSQL.',
-      'Integrate payment systems (SPP billing, invoice generation).',
-      'Deploy and maintain microservices with Docker & Kubernetes.',
-      'Improve system reliability and performance with monitoring & caching.',
-    ],
-    skills: ['Node.js', 'NestJS', 'PostgreSQL', 'Docker', 'Kubernetes'],
-  },
-  {
-    id: 'exp-2',
-    title: 'Software Developer',
-    type: 'Full-time',
-    duration: '2020 – 2023',
-    icon: Code2,
-    responsibilities: [
-      'Developed web apps with React, TypeScript, and modern frontend tooling.',
-      'Collaborated with designers & analysts to deliver end-to-end solutions.',
-      'Built internal dashboards for analytics and executive reporting.',
-      'Worked in Agile environment, focusing on clean code and scalability.',
-    ],
-    skills: ['React', 'TypeScript', 'Express', 'ElasticSearch'],
-  },
-  {
-    id: 'exp-3',
-    title: 'System Analyst',
-    type: 'Contract',
-    duration: '2018 – 2020',
-    icon: Database,
-    responsibilities: [
-      'Gathered and translated business requirements into technical specs.',
-      'Designed database schemas and optimized SQL queries.',
-      'Coordinated with stakeholders to align technical solutions with goals.',
-      'Performed system testing and documentation for ongoing projects.',
-    ],
-    skills: ['SQL', 'System Analysis', 'Documentation', 'Collaboration'],
-  },
-  {
-    id: 'exp-4',
-    title: 'Intern – IT Support & Developer',
-    type: 'Internship',
-    duration: '2017 – 2018',
-    icon: Cpu,
-    responsibilities: [
-      'Maintained IT infrastructure and provided technical support.',
-      'Contributed small features to internal tools and systems.',
-      'Learned fundamentals of backend & frontend development.',
-    ],
-    skills: ['IT Support', 'Basic Web Dev', 'Problem Solving'],
-  },
-]
-
-interface TimelineItemContentProps {
+interface TimelineItemProps {
   item: TimelineItemData
+  expanded: boolean
+  onToggle: (id: string) => void
+  index: number
 }
 
 const TimelineItemContent = memo(function TimelineItemContent({
@@ -119,13 +131,6 @@ const TimelineItemContent = memo(function TimelineItemContent({
 })
 TimelineItemContent.displayName = 'TimelineItemContent'
 
-interface TimelineItemProps {
-  item: TimelineItemData
-  expanded: boolean
-  onToggle: (id: string) => void
-  index: number
-}
-
 const TimelineItem = memo(function TimelineItem({
   item,
   expanded,
@@ -146,9 +151,9 @@ const TimelineItem = memo(function TimelineItem({
         >
           <button
             onClick={() => onToggle(item.id)}
-            className="w-full text-left p-6 flex items-center justify-between cursor-pointer"
+            className="w-full text-left px-2 py-4 md:px-6 md:py-6 flex items-start md:items-center justify-between cursor-pointer"
           >
-            <div className="space-y-2 flex-1">
+            <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-cyan-500/10 rounded-md">
                   <Icon className="w-5 h-5 text-cyan-400" />
@@ -157,13 +162,14 @@ const TimelineItem = memo(function TimelineItem({
                   {item.title}
                 </h3>
               </div>
-              <div className="flex items-center gap-3 ml-11 text-sm">
+              <div className="flex flex-col-reverse md:flex-row items-start md:items-center gap-3 ml-12 text-sm">
                 <Badge>{item.type}</Badge>
                 <span className="text-gray-400">{item.duration}</span>
               </div>
             </div>
+
             <span
-              className={`text-cyan-400 transition-transform duration-300 ${
+              className={`text-cyan-400 transition-transform duration-300 mt-2 md:mt-0 ${
                 expanded ? 'rotate-180' : ''
               }`}
             >
@@ -182,7 +188,7 @@ const TimelineItem = memo(function TimelineItem({
 })
 TimelineItem.displayName = 'TimelineItem'
 
-export function ProfessionalTimeline() {
+const ProfessionalTimeline = () => {
   const [expanded, setExpanded] = useState<Set<string>>(
     () => new Set([timelineData[0].id]),
   )
@@ -200,29 +206,31 @@ export function ProfessionalTimeline() {
   }, [])
 
   return (
-    <section
-      id="experience"
-      className="relative w-full min-h-screen py-20 px-6 bg-black"
-    >
-      <div className="max-w-3xl mx-auto">
-        <header className="mb-12 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_20px_#22d3ee] mb-4">
-            Professional Experience
-          </h2>
-          <p className="text-gray-400 text-sm md:text-base">
-            A timeline of my journey as a developer and engineer
+    <section id="experience" className="relative">
+      <div className="w-full min-h-fit py-20 flex flex-col items-center gap-10">
+        <div className="relative max-w-3xl mx-auto text-center z-10 space-y-3">
+          <div className="flex items-center justify-center gap-3">
+            <Sparkles className="h-8 w-8 text-cyan-400 drop-shadow-[0_0_8px_#06b6d4]" />
+            <h2 className="projects-title text-2xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_20px_#9333EA]">
+              Professional Experience
+            </h2>
+          </div>
+          <p className="projects-desc mt-3 text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
+            A timeline of my journey as a developer and engineer, highlighting
+            key roles, responsibilities, and technologies used.
           </p>
-        </header>
-
-        {timelineData.map((item, idx) => (
-          <TimelineItem
-            key={item.id}
-            item={item}
-            expanded={expanded.has(item.id)}
-            onToggle={onToggle}
-            index={idx}
-          />
-        ))}
+        </div>
+        <div className="relative max-w-7xl min-h-fit px-2 md:px-0 mx-auto">
+          {timelineData.map((item, idx) => (
+            <TimelineItem
+              key={item.id}
+              item={item}
+              expanded={expanded.has(item.id)}
+              onToggle={onToggle}
+              index={idx}
+            />
+          ))}
+        </div>
       </div>
       <GlowLine
         orientation="horizontal"

@@ -30,6 +30,12 @@ interface OffscreenCanvasRenderingContext2D {
     y1: number,
     r1: number,
   ) => CanvasGradient
+  createLinearGradient: (
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+  ) => CanvasGradient
   font: string
   textBaseline: CanvasTextBaseline
   fillStyle: string | CanvasGradient | CanvasPattern
@@ -80,7 +86,7 @@ const CHAR_WIDTH = 10
 const CHAR_HEIGHT = 20
 const CHARACTER_SET =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_{}[]:;<>,.?/'
-const PARTICLE_POOL_SIZE = 5000
+const PARTICLE_POOL_SIZE = 10000
 const RENDER_THROTTLE = 16
 
 function hexToRgb(hex: string): HexColor | null {
@@ -98,6 +104,47 @@ function hexToRgb(hex: string): HexColor | null {
         b: parseInt(result[3], 16),
       }
     : null
+}
+
+function parseGradient(
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+  gradientStr: string,
+): CanvasGradient | null {
+  if (!gradientStr.startsWith('linear-gradient')) return null
+
+  const match = gradientStr.match(/linear-gradient\(([^,]+),(.+)\)/)
+  if (!match) return null
+
+  const angleStr = match[1].trim()
+  const colors = match[2].split(',').map((c) => c.trim())
+
+  let angleDeg = 90
+  const angleMatch = angleStr.match(/(-?\d+\.?\d*)deg/)
+  if (angleMatch) {
+    angleDeg = parseFloat(angleMatch[1])
+  }
+
+  const angleRad = (angleDeg * Math.PI) / 180
+
+  const w = ctx.canvas.width
+  const h = ctx.canvas.height
+  const halfW = w / 2
+  const halfH = h / 2
+  const r = Math.sqrt(halfW * halfW + halfH * halfH)
+
+  const x0 = halfW - Math.cos(angleRad) * r
+  const y0 = halfH - Math.sin(angleRad) * r
+  const x1 = halfW + Math.cos(angleRad) * r
+  const y1 = halfH + Math.sin(angleRad) * r
+
+  const gradient = ctx.createLinearGradient(x0, y0, x1, y1)
+
+  const step = 1 / (colors.length - 1)
+  colors.forEach((color, i) => {
+    gradient.addColorStop(i * step, color)
+  })
+
+  return gradient
 }
 
 class Particle {
@@ -237,8 +284,17 @@ class RenderingEngine {
 
     this.lastRenderTime = now
     const renderCtx = this.offscreenCtx || this.ctx
-    const baseColor = hexToRgb(glitchColor)
-    if (!baseColor) return
+
+    let baseColor: HexColor | null = null
+    let gradientStyle: CanvasGradient | null = null
+
+    if (glitchColor.startsWith('linear-gradient')) {
+      gradientStyle = parseGradient(renderCtx, glitchColor)
+    } else {
+      baseColor = hexToRgb(glitchColor)
+    }
+
+    if (!baseColor && !gradientStyle) return
 
     renderCtx.clearRect(0, 0, renderCtx.canvas.width, renderCtx.canvas.height)
 
@@ -258,29 +314,37 @@ class RenderingEngine {
       renderCtx.globalAlpha = opacity
 
       bucket.forEach((particle) => {
-        const gradient = renderCtx.createRadialGradient(
-          particle.x + CHAR_WIDTH / 2,
-          particle.y + CHAR_HEIGHT / 2,
-          0,
-          particle.x + CHAR_WIDTH / 2,
-          particle.y + CHAR_HEIGHT / 2,
-          CHAR_WIDTH * 1.5,
-        )
+        let fillStyle: string | CanvasGradient
 
-        gradient.addColorStop(
-          0,
-          `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 1)`,
-        )
-        gradient.addColorStop(
-          0.5,
-          `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0.5)`,
-        )
-        gradient.addColorStop(
-          1,
-          `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0)`,
-        )
+        if (gradientStyle) {
+          fillStyle = gradientStyle
+        } else if (baseColor) {
+          const gradient = renderCtx.createRadialGradient(
+            particle.x + CHAR_WIDTH / 2,
+            particle.y + CHAR_HEIGHT / 2,
+            0,
+            particle.x + CHAR_WIDTH / 2,
+            particle.y + CHAR_HEIGHT / 2,
+            CHAR_WIDTH * 1.5,
+          )
+          gradient.addColorStop(
+            0,
+            `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 1)`,
+          )
+          gradient.addColorStop(
+            0.5,
+            `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0.5)`,
+          )
+          gradient.addColorStop(
+            1,
+            `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0)`,
+          )
+          fillStyle = gradient
+        } else {
+          return
+        }
 
-        renderCtx.fillStyle = gradient
+        renderCtx.fillStyle = fillStyle
         renderCtx.fillText(particle.char, particle.x, particle.y)
       })
     })
@@ -323,31 +387,16 @@ const useMatrixAnimation = (
   const animationFrameId = useRef<number | null>(null)
   const mousePosRef = useRef<MousePosition | null>(null)
   const lastFrameTime = useRef(0)
-  const gridRef = useRef<GridDimensions>({
-    cols: 0,
-    rows: 0,
-  })
+  const gridRef = useRef<GridDimensions>({ cols: 0, rows: 0 })
 
   const performanceSettings = useMemo(() => {
     switch (performanceMode) {
       case 'high':
-        return {
-          updateInterval: 16,
-          renderThrottle: 16,
-          batchSize: 200,
-        }
+        return { updateInterval: 14, renderThrottle: 14, batchSize: 300 }
       case 'low':
-        return {
-          updateInterval: 50,
-          renderThrottle: 33,
-          batchSize: 50,
-        }
+        return { updateInterval: 50, renderThrottle: 33, batchSize: 50 }
       default:
-        return {
-          updateInterval: 33,
-          renderThrottle: 16,
-          batchSize: 100,
-        }
+        return { updateInterval: 33, renderThrottle: 16, batchSize: 100 }
     }
   }, [performanceMode])
 
@@ -360,7 +409,7 @@ const useMatrixAnimation = (
       const rect = interactionElement.getBoundingClientRect()
       mousePosRef.current = {
         x: mouseEvent.clientX - rect.left,
-        y: mouseEvent.clientY / 2.1 - rect.top,
+        y: mouseEvent.clientY - rect.top,
       }
     },
     [interactionRef],
@@ -391,7 +440,7 @@ const useMatrixAnimation = (
     const setup = (width: number, height: number) => {
       const dpr = window.devicePixelRatio || 1
       canvas.width = width * dpr
-      canvas.height = (height * dpr) / 2
+      canvas.height = height * dpr
       canvas.style.width = `${width}px`
       canvas.style.height = `${height}px`
       context.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -434,17 +483,14 @@ const useMatrixAnimation = (
 
           batch.forEach((particle) => {
             let targetOpacity = 0
-
             if (mousePos) {
               const dx = particle.x - mousePos.x + CHAR_WIDTH / 2
               const dy = particle.y - mousePos.y + CHAR_HEIGHT / 2
               const distance = Math.sqrt(dx * dx + dy * dy)
-
               if (distance < glitchRadius) {
                 targetOpacity = 1 - distance / glitchRadius
               }
             }
-
             particle.setTargetOpacity(targetOpacity)
             if (particle.update(deltaTime)) {
               needsRender = true
@@ -510,17 +556,14 @@ const LetterGlitch = React.memo<LetterGlitchProps>(
     performanceMode = 'balanced',
   }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-
     useMatrixAnimation(canvasRef, interactionRef, {
       glitchColor,
       glitchRadius,
       performanceMode,
     })
-
-    return <canvas ref={canvasRef} className="block w-full h-full" />
+    return <canvas ref={canvasRef} />
   },
 )
-
 LetterGlitch.displayName = 'LetterGlitch'
 
 const GlitchVault = React.memo<GlitchVaultProps>(
@@ -535,12 +578,9 @@ const GlitchVault = React.memo<GlitchVaultProps>(
     const interactionRef = useRef<HTMLDivElement>(null)
 
     return (
-      <div
-        ref={interactionRef}
-        className={`relative rounded-2xl overflow-hidden ${className}`}
-      >
+      <div ref={interactionRef} className={`${className}`}>
         {!disabled && (
-          <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 z-0 w-full h-full pointer-events-none">
             <LetterGlitch
               interactionRef={interactionRef}
               glitchColor={glitchColor}
@@ -549,10 +589,11 @@ const GlitchVault = React.memo<GlitchVaultProps>(
             />
           </div>
         )}
-        <div className="relative z-20"> {children} </div>
+        <div className="relative z-10">{children}</div>
       </div>
     )
   },
 )
 GlitchVault.displayName = 'GlitchVault'
+
 export default GlitchVault

@@ -78,14 +78,15 @@ const Hero = () => {
   return (
     <section
       id="hero"
-      className="relative h-screen flex flex-col items-center justify-start overflow-hidden bg-transparent pt-28"
+      className="relative min-h-screen flex flex-col justify-start overflow-hidden items-center"
     >
-      <div className="absolute inset-0 bg-gray-900/80 z-0 opacity-10" />
+      <div className="absolute inset-0 bg-gray-900/80 z-0 opacity-40" />
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl animate-pulse" />
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
+
       <div
         ref={heroRef}
-        className="relative text-center z-10 px-6 flex flex-col items-center"
+        className="relative mx-auto text-center mt-32"
       >
         <h1
           ref={nameRef}
@@ -122,13 +123,15 @@ const Hero = () => {
           />
         </p>
       </div>
-      <div className="absolute top-[45%]  md:top-[30%] left-1/2 transform -translate-x-1/2 animate-bounce text-gray-400 text-sm tracking-widest z-20">
+
+      <div className="absolute top-[30%] md:top-[30%] left-1/2 transform -translate-x-1/2 animate-bounce text-gray-400 text-sm tracking-widest z-20">
         ↓ SCROLL
       </div>
+
       <GlowLine
         orientation="horizontal"
         position="100%"
-        color="blue"
+        color="purple"
         className="z-50"
       />
     </section>
