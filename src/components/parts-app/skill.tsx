@@ -412,9 +412,9 @@ const Skill = () => {
             ref={descRef}
             className="text-gray-300 text-sm md:text-base max-w-xl mx-auto leading-relaxed"
           >
-            A collection of tools, technologies, and frameworks I’ve mastered
-            and frequently use to craft modern, scalable, and delightful
-            applications.
+            Think of this less as my skills and more like my tech exes — stuff
+            I’ve used before, sometimes seriously, sometimes just a fling.
+            Mastery? Eh… let’s not go that far 😂
           </p>
         </div>
 

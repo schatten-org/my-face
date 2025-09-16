@@ -76,42 +76,30 @@ const About = () => {
             highlightColor="linear-gradient(to right, #22d3ee, #9333ea)"
             className="font-semibold text-white"
           >
-            Bedy Briliant Wijaya
+            Bedy
           </TextHighlighter>
-          , but most people just call me{' '}
+          , your friendly neighborhood{' '}
           <TextHighlighter
             highlightColor="linear-gradient(to right, #9333ea, #ec4899)"
             className="font-semibold text-white"
           >
-            Bedy
-          </TextHighlighter>
-          . By day I’m a{' '}
-          <TextHighlighter
-            highlightColor="linear-gradient(to right, #ec4899, #22d3ee)"
-            className="font-semibold text-white"
-          >
             Software Engineer
           </TextHighlighter>
-          , and by night you’ll probably find me watching anime, reading
-          fiction, or vibing to playlists that jump from lo-fi beats all the way
-          to heavy metal (yup, my music taste has no boundaries 🎧).
+          . By day I build apps, by night I binge anime and music with zero
+          consistency.
           <br />
-          <br />I also have a soft spot for{' '}
-          <TextHighlighter
-            highlightColor="linear-gradient(to right, #22d3ee, #9333ea)"
-            className="font-semibold text-white"
-          >
-            history books
-          </TextHighlighter>{' '}
-          and lately I’ve been learning{' '}
+          Fun fact: even parts of this portfolio were written with a little help
+          from AI (don’t worry, I still did the coding… mostly 😏).
+          <br />
+          Currently struggling with{' '}
           <TextHighlighter
             highlightColor="linear-gradient(to right, #ec4899, #22d3ee)"
             className="font-semibold text-white"
           >
             Japanese
-          </TextHighlighter>{' '}
-          step by step, hoping one day I can watch anime and sing along to J-pop
-          without subtitles (a dream, but we’ll get there 😂).
+          </TextHighlighter>
+          , so wish me luck — one day I’ll make it through anime without subs.
+          Until then… Google-sensei and AI got my back 😂.
         </p>
       </div>
 

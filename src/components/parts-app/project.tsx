@@ -11,10 +11,8 @@ import React from 'react'
 import type { FC, ReactNode, SVGProps } from 'react'
 
 import GlowLine from '@/components/ui/glowline'
-
-const cn = (...inputs: Array<string | boolean | undefined | null>) => {
-  return inputs.filter(Boolean).join(' ')
-}
+import { cn } from '@/lib/utils'
+import Modal from '@/components/ui/modal'
 
 interface BentoGridProps {
   children: ReactNode
@@ -29,6 +27,7 @@ interface BentoCardProps {
   description: string
   href: string
   cta: string
+  onClick?: () => void
 }
 
 type Project = {
@@ -130,9 +129,11 @@ const BentoCard: FC<BentoCardProps> = ({
   description,
   href,
   cta,
+  onClick,
 }) => (
   <div
     key={name}
+    onClick={onClick}
     className={cn(
       'group relative flex flex-col justify-between overflow-hidden rounded-xl border border-cyan-400/20',
       'bg-black/60 backdrop-blur-md shadow-lg hover:shadow-[0_0_25px_#06b6d4]',
@@ -141,7 +142,7 @@ const BentoCard: FC<BentoCardProps> = ({
     )}
   >
     <div>{background}</div>
-    <div className="pointer-events-none z-10 flex flex-col gap-2 p-6 transition-all duration-300 group-hover:-translate-y-6">
+    <div className="z-10 flex flex-col gap-2 p-6 transition-all duration-300 group-hover:-translate-y-6">
       <Icon className="h-12 w-12 text-cyan-400 drop-shadow-[0_0_6px_#06b6d4]" />
       <h3 className="text-xl font-bold text-white">{name}</h3>
       <p className="text-gray-300 text-sm leading-relaxed">{description}</p>
@@ -154,7 +155,10 @@ const BentoCard: FC<BentoCardProps> = ({
     >
       <a
         href={href}
-        className="pointer-events-auto text-sm font-semibold text-cyan-400 hover:text-pink-400 flex items-center gap-2"
+        target="_blank"
+        rel="noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="text-sm font-semibold text-cyan-400 hover:text-pink-400 flex items-center gap-2 z-50 cursor-pointer"
       >
         {cta}
         <svg
@@ -171,11 +175,13 @@ const BentoCard: FC<BentoCardProps> = ({
         </svg>
       </a>
     </div>
-    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 opacity-40 group-hover:opacity-60 transition-all" />
+    <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 opacity-40 group-hover:opacity-60 transition-all" />
   </div>
 )
 
 const Projects = () => {
+  const [isOpen, setIsOpen] = React.useState(false)
+
   return (
     <section id="projects" className="relative">
       <div className="w-full min-h-screen flex flex-col items-center justify-center py-12 md:py-20 gap-y-10">
@@ -187,8 +193,9 @@ const Projects = () => {
             </h2>
           </div>
           <p className="projects-desc mt-3 text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
-            A selection of impactful projects showcasing scalability, security,
-            and performance across industries.
+            A bunch of projects I somehow convinced myself (and sometimes
+            others) were production-ready. Some even had a little “AI magic”
+            sprinkled in and miraculously, a few of them still work 🙌
           </p>
         </div>
         <div className="relative max-w-7xl min-h-fit px-2 md:px-0 mx-auto">
@@ -200,6 +207,7 @@ const Projects = () => {
                 <BentoCard
                   key={idx}
                   className={isBig ? 'lg:col-span-2' : 'lg:col-span-1'}
+                  onClick={() => setIsOpen(true)}
                   {...project}
                 />
               )
@@ -207,12 +215,45 @@ const Projects = () => {
           </BentoGrid>
         </div>
       </div>
+      {/* <button
+        onClick={() => setIsOpen(true)}
+        className="mx-auto cursor-pointer px-4 py-2 bg-cyan-400 text-white rounded-md hover:bg-cyan-500"
+      >
+        click me
+      </button> */}
       <GlowLine
         orientation="horizontal"
         position="100%"
         color="purple"
         className="z-50"
       />
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Scale Animation"
+        animation="bounce"
+        size="xl"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-700 dark:text-gray-300">
+            This modal uses the <strong>scale</strong> animation with spring
+            physics. It scales from 75% to 100% with a gentle bounce effect and
+            moves up slightly during the entrance.
+          </p>
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+            <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">
+              Animation Properties:
+            </h4>
+            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+              <li>• Scale: 0.75 → 1.0</li>
+              <li>• Y movement: 20px up</li>
+              <li>• Spring damping: 25</li>
+              <li>• Spring stiffness: 300</li>
+            </ul>
+          </div>
+        </div>
+      </Modal>
     </section>
   )
 }

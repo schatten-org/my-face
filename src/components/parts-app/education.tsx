@@ -131,8 +131,8 @@ const EducationSection = () => {
             </h2>
           </div>
           <p className="projects-desc mt-3 text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
-            My academic journey in Informatics Engineering, laying the
-            foundation for my career in technology and software development.
+            Where I learned some theory, forgot half of it, and somehow still
+            graduated while surviving on last-minute coding 🤣
           </p>
         </div>
         <div className="relative max-w-7xl min-h-fit px-2 md:px-0 mx-auto">

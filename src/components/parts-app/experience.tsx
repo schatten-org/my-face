@@ -216,8 +216,7 @@ const ProfessionalTimeline = () => {
             </h2>
           </div>
           <p className="projects-desc mt-3 text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
-            A timeline of my journey as a developer and engineer, highlighting
-            key roles, responsibilities, and technologies used.
+            Basically a list of jobs where I tried to look professional 🙃
           </p>
         </div>
         <div className="relative max-w-7xl min-h-fit px-2 md:px-0 mx-auto">
