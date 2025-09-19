@@ -3,10 +3,10 @@ import ScrollTrigger from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { useEffect, useRef } from 'react'
 
+import GlitchText from '@/components/ui/glitch'
 import GlowLine from '@/components/ui/glowline'
 import ParticleText from '@/components/ui/particle'
 import TypewriterText from '@/components/ui/typewriter'
-import GlitchText from '@/components/ui/glitch'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -84,10 +84,7 @@ const Hero = () => {
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl animate-pulse" />
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
 
-      <div
-        ref={heroRef}
-        className="relative mx-auto text-center mt-32"
-      >
+      <div ref={heroRef} className="relative mx-auto text-center mt-32">
         <h1
           ref={nameRef}
           aria-label="Bedy Briliant Wijaya"
@@ -124,7 +121,7 @@ const Hero = () => {
         </p>
       </div>
 
-      <div className="absolute top-[30%] md:top-[30%] left-1/2 transform -translate-x-1/2 animate-bounce text-gray-400 text-sm tracking-widest z-20">
+      <div className="absolute top-[35%] md:top-[30%] left-1/2 transform -translate-x-1/2 animate-bounce text-gray-400 text-sm tracking-widest z-20">
         ↓ SCROLL
       </div>
 

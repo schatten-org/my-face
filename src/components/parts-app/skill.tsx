@@ -1,7 +1,7 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import { Sparkles } from 'lucide-react'
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react'
 
 import GlitchVault from '@/components/ui/glitchvault'
 import GlowLine from '@/components/ui/glowline'
@@ -412,7 +412,7 @@ const Skill = () => {
             ref={descRef}
             className="text-gray-300 text-sm md:text-base max-w-xl mx-auto leading-relaxed"
           >
-            Think of this less as my skills and more like my tech exes — stuff
+            Think of this less as my skills and more like my tech exes stuff
             I’ve used before, sometimes seriously, sometimes just a fling.
             Mastery? Eh… let’s not go that far 😂
           </p>

@@ -230,7 +230,7 @@ const Modal: React.FC<ModalProps> = ({
                 <button
                   onClick={onClose}
                   className={cn(
-                    "p-1 rounded-md transition-colors",
+                    "p-1 rounded-md transition-colors cursor-pointer",
                     "text-gray-400 hover:text-gray-600",
                     "dark:text-gray-400 dark:hover:text-gray-200",
                     "hover:bg-gray-100 dark:hover:bg-gray-800"

@@ -1,112 +1,24 @@
-import {
-  Forklift,
-  GraduationCap,
-  Landmark,
-  Newspaper,
-  Smartphone,
-  Sparkles,
-  TrainFront,
-} from 'lucide-react'
+import { Globe, MonitorDot, Smartphone, Sparkles } from 'lucide-react'
+import type { FC, ReactNode } from 'react'
 import React from 'react'
-import type { FC, ReactNode, SVGProps } from 'react'
+import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 import GlowLine from '@/components/ui/glowline'
-import { cn } from '@/lib/utils'
+import Marquee from '@/components/ui/marquee'
 import Modal from '@/components/ui/modal'
+import type { Project as ProjectType } from '@/data/data-project'
+import { projects } from '@/data/data-project'
+import { cn } from '@/lib/utils'
 
 interface BentoGridProps {
   children: ReactNode
   className?: string
 }
 
-interface BentoCardProps {
-  name: string
+interface BentoCardProps extends Omit<ProjectType, 'detail'> {
   className: string
-  background: ReactNode
-  Icon: React.ElementType
-  description: string
-  href: string
-  cta: string
   onClick?: () => void
 }
-
-type Project = {
-  Icon: FC<SVGProps<SVGSVGElement>>
-  name: string
-  description: string
-  href: string
-  cta: string
-  background: ReactNode
-}
-
-const projects: Array<Project> = [
-  {
-    Icon: Smartphone,
-    name: 'Super App POLRI',
-    description:
-      'Mobile app for Indonesian National Police with millions of downloads. Focus on scalability, security & performance.',
-    href: 'https://play.google.com/store/apps/details?id=superapps.polri.presisi.presisi&hl=id',
-    cta: 'See App',
-    background: (
-      <div className="absolute inset-0 bg-cyan-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-  {
-    Icon: Newspaper,
-    name: 'kuatbaca.com',
-    description:
-      'News portal with custom CMS. Features SEO optimization, ad integration, analytics & user auth.',
-    href: 'https://kuatbaca.com',
-    cta: 'Explore Site',
-    background: (
-      <div className="absolute inset-0 bg-purple-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-  {
-    Icon: GraduationCap,
-    name: "I'm Pharmachist",
-    description:
-      'E-learning platform for pharmacy students. Interactive courses, quizzes & progress tracking.',
-    href: 'https://im-pharmacist.com',
-    cta: 'See Platform',
-    background: (
-      <div className="absolute inset-0 bg-pink-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-  {
-    Icon: Forklift,
-    name: 'GLID: Logistics System',
-    description:
-      'Logistics management system for POS Indonesia. Real-time tracking, route optimization & inventory control.',
-    href: 'https://www.glid.id/id',
-    cta: 'See System',
-    background: (
-      <div className="absolute inset-0 bg-indigo-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-  {
-    Icon: Landmark,
-    name: 'CEISA 4.0',
-    description:
-      'Customs & excise information system for Indonesian government. Features document management, reporting & compliance tracking.',
-    href: 'https://portal.beacukai.go.id',
-    cta: 'See System',
-    background: (
-      <div className="absolute inset-0 bg-indigo-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-  {
-    Icon: TrainFront,
-    name: 'Executive Dashboard',
-    description:
-      'Executive dashboard for LRT Jabodebek (PT KAI). Real-time monitoring, analytics & reporting for operations management.',
-    href: '#',
-    cta: 'See System',
-    background: (
-      <div className="absolute inset-0 bg-indigo-950/30 blur-2xl animate-pulse" />
-    ),
-  },
-]
 
 const BentoGrid: FC<BentoGridProps> = ({ children, className }) => {
   return (
@@ -122,7 +34,8 @@ const BentoGrid: FC<BentoGridProps> = ({ children, className }) => {
 }
 
 const BentoCard: FC<BentoCardProps> = ({
-  name,
+  id,
+  title,
   className,
   background,
   Icon,
@@ -132,7 +45,7 @@ const BentoCard: FC<BentoCardProps> = ({
   onClick,
 }) => (
   <div
-    key={name}
+    key={id}
     onClick={onClick}
     className={cn(
       'group relative flex flex-col justify-between overflow-hidden rounded-xl border border-cyan-400/20',
@@ -144,8 +57,10 @@ const BentoCard: FC<BentoCardProps> = ({
     <div>{background}</div>
     <div className="z-10 flex flex-col gap-2 p-6 transition-all duration-300 group-hover:-translate-y-6">
       <Icon className="h-12 w-12 text-cyan-400 drop-shadow-[0_0_6px_#06b6d4]" />
-      <h3 className="text-xl font-bold text-white">{name}</h3>
-      <p className="text-gray-300 text-sm leading-relaxed">{description}</p>
+      <h3 className="text-xl font-bold text-white">{title}</h3>
+      <p className="text-gray-300 text-sm leading-relaxed line-clamp-1">
+        {description}
+      </p>
     </div>
     <div
       className={cn(
@@ -180,7 +95,10 @@ const BentoCard: FC<BentoCardProps> = ({
 )
 
 const Projects = () => {
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [modal, setModal] = React.useState<{
+    isOpen: boolean
+    project?: ProjectType
+  }>({ isOpen: false })
 
   return (
     <section id="projects" className="relative">
@@ -206,8 +124,14 @@ const Projects = () => {
               return (
                 <BentoCard
                   key={idx}
-                  className={isBig ? 'lg:col-span-2' : 'lg:col-span-1'}
-                  onClick={() => setIsOpen(true)}
+                  className={`${isBig ? 'lg:col-span-2' : 'lg:col-span-1'} cursor-zoom-in`}
+                  onClick={() =>
+                    setModal((prev) => ({
+                      ...prev,
+                      isOpen: true,
+                      project,
+                    }))
+                  }
                   {...project}
                 />
               )
@@ -215,42 +139,86 @@ const Projects = () => {
           </BentoGrid>
         </div>
       </div>
-      {/* <button
-        onClick={() => setIsOpen(true)}
-        className="mx-auto cursor-pointer px-4 py-2 bg-cyan-400 text-white rounded-md hover:bg-cyan-500"
-      >
-        click me
-      </button> */}
       <GlowLine
         orientation="horizontal"
         position="100%"
         color="purple"
         className="z-50"
       />
-
       <Modal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        title="Scale Animation"
+        isOpen={modal.isOpen}
+        onClose={() =>
+          setModal((prev) => ({ ...prev, isOpen: false, project: undefined }))
+        }
+        title={modal.project?.title}
         animation="bounce"
         size="xl"
       >
-        <div className="space-y-4">
-          <p className="text-gray-700 dark:text-gray-300">
-            This modal uses the <strong>scale</strong> animation with spring
-            physics. It scales from 75% to 100% with a gentle bounce effect and
-            moves up slightly during the entrance.
-          </p>
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-            <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">
-              Animation Properties:
-            </h4>
-            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-              <li>• Scale: 0.75 → 1.0</li>
-              <li>• Y movement: 20px up</li>
-              <li>• Spring damping: 25</li>
-              <li>• Spring stiffness: 300</li>
-            </ul>
+        <div className="w-full h-fit flex flex-col text-gray-900">
+          <div className="w-full h-full md:h-64 bg-gray-200 rounded-lg mb-4 overflow-hidden flex items-center justify-center">
+            <LazyLoadImage
+              alt="Project Image"
+              src={modal.project?.details.images || '/images/example.png'}
+              effect="opacity"
+              wrapperProps={{
+                style: { transitionDelay: '1s' },
+              }}
+              className="object-cover object-center"
+            />
+          </div>
+
+          <div className="w-full h-fit py-2 flex flex-col gap-y-2">
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-semibold text-gray-800">
+                {['Company'].includes(modal.project?.details.type as string)
+                  ? `Under ${modal.project?.details.company}`
+                  : ['Freelance'].includes(
+                        modal.project?.details.type as string,
+                      )
+                    ? `Freelance`
+                    : modal.project?.details.type}
+              </h4>
+              <div className="flex items-center space-x-1.5">
+                {modal.project?.details.platform === 'Web App' ? (
+                  <Globe className="h-4 w-4 text-gray-600" />
+                ) : modal.project?.details.platform === 'Mobile App' ? (
+                  <Smartphone className="h-4 w-4 text-gray-600" />
+                ) : modal.project?.details.platform === 'Desktop App' ? (
+                  <MonitorDot className="h-4 w-4 text-gray-600" />
+                ) : null}
+                <span className="text-sm text-gray-600 font-semibold">
+                  {modal.project?.details.platform}
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h4 className="text-sm font-semibold text-gray-800">
+                Technologies Used:
+              </h4>
+              <Marquee
+                className="bg-inherit rounded-lg"
+                pauseOnHover
+                children={modal.project?.details.tech.map((x, index) => (
+                  <a
+                    key={index}
+                    href={x.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-cyan-50 text-cyan-800 rounded-full text-sm font-medium px-4 py-2 whitespace-nowrap hover:bg-cyan-100 transition-all flex items-center gap-1 hover:shadow-lg hover:scale-105 transform duration-200 hover:text-cyan-600"
+                  >
+                    <img
+                      src={x.image}
+                      alt={x.name}
+                      className="inline-block h-5 w-5"
+                    />
+                    <span>{x.name}</span>
+                  </a>
+                ))}
+              />
+            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              {modal.project?.description}
+            </p>
           </div>
         </div>
       </Modal>
