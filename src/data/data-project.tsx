@@ -1,4 +1,5 @@
 import {
+  Computer,
   Forklift,
   GraduationCap,
   Landmark,
@@ -45,7 +46,7 @@ export const projects: Array<Project> = [
     title: "I'm Pharmachist",
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis sapiente suscipit deserunt reiciendis tempora facilis, assumenda harum labore dolorum odio perferendis molestias voluptas, animi culpa delectus praesentium dignissimos ipsum veritatis?',
-    href: 'https://meingehirn.ninja/',
+    href: '/',
     cta: 'Visit Website',
     Icon: GraduationCap,
     background: (
@@ -96,7 +97,7 @@ export const projects: Array<Project> = [
     title: 'CEISA 4.0',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis sapiente suscipit deserunt reiciendis tempora facilis, assumenda harum labore dolorum odio perferendis molestias voluptas, animi culpa delectus praesentium dignissimos ipsum veritatis?',
-    href: 'https://meingehirn.ninja/',
+    href: 'https://portal.beacukai.go.id/',
     cta: 'Visit Website',
     Icon: Landmark,
     background: (
@@ -173,7 +174,7 @@ export const projects: Array<Project> = [
     title: 'Kuat Baca',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis sapiente suscipit deserunt reiciendis tempora facilis, assumenda harum labore dolorum odio perferendis molestias voluptas, animi culpa delectus praesentium dignissimos ipsum veritatis?',
-    href: 'https://meingehirn.ninja/',
+    href: 'https://kuatbaca.com/',
     cta: 'Visit Website',
     Icon: Newspaper,
     background: (
@@ -231,10 +232,10 @@ export const projects: Array<Project> = [
   },
   {
     id: 'executive-dashboard-1',
-    title: 'Executive Dashboard',
+    title: 'Executive Dashboard | LRT Jabodebek PT. KAI',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis sapiente suscipit deserunt reiciendis tempora facilis, assumenda harum labore dolorum odio perferendis molestias voluptas, animi culpa delectus praesentium dignissimos ipsum veritatis?',
-    href: 'https://meingehirn.ninja/',
+    href: '/',
     cta: 'Visit Website',
     Icon: TrainFront,
     background: (
@@ -278,10 +279,10 @@ export const projects: Array<Project> = [
   },
   {
     id: 'glid-logistics-1',
-    title: 'GLID: Logistics System',
+    title: 'GLID: Logistics System | PT POS Indonesia',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis sapiente suscipit deserunt reiciendis tempora facilis, assumenda harum labore dolorum odio perferendis molestias voluptas, animi culpa delectus praesentium dignissimos ipsum veritatis?',
-    href: 'https://meingehirn.ninja/',
+    href: 'https://www.glid.id/',
     cta: 'Visit Website',
     Icon: Forklift,
     background: (
@@ -343,7 +344,7 @@ export const projects: Array<Project> = [
     title: 'Kimia Farma Mobile',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis sapiente suscipit deserunt reiciendis tempora facilis, assumenda harum labore dolorum odio perferendis molestias voluptas, animi culpa delectus praesentium dignissimos ipsum veritatis?',
-    href: 'https://meingehirn.ninja/',
+    href: 'https://play.google.com/store/apps/details?id=com.kimiafarma.online&hl=id',
     cta: 'Explore App',
     Icon: Forklift,
     background: (
@@ -402,10 +403,10 @@ export const projects: Array<Project> = [
   },
   {
     id: 'academic-information-system-1',
-    title: 'Academic Information System',
+    title: 'Academic Information System | Universitas Mercu Buana',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis sapiente suscipit deserunt reiciendis tempora facilis, assumenda harum labore dolorum odio perferendis molestias voluptas, animi culpa delectus praesentium dignissimos ipsum veritatis?',
-    href: 'https://meingehirn.ninja/',
+    href: '/',
     cta: 'Visit Website',
     Icon: GraduationCap,
     background: (
@@ -477,7 +478,7 @@ export const projects: Array<Project> = [
     title: 'Super App POLRI',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis sapiente suscipit deserunt reiciendis tempora facilis, assumenda harum labore dolorum odio perferendis molestias voluptas, animi culpa delectus praesentium dignissimos ipsum veritatis?',
-    href: 'https://meingehirn.ninja/',
+    href: 'https://play.google.com/store/apps/details?id=superapps.polri.presisi.presisi&hl=id',
     cta: 'Explore App',
     Icon: Smartphone,
     background: (
@@ -538,9 +539,9 @@ export const projects: Array<Project> = [
     title: 'Sistem Pengajuan TIK POLRI',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis sapiente suscipit deserunt reiciendis tempora facilis, assumenda harum labore dolorum odio perferendis molestias voluptas, animi culpa delectus praesentium dignissimos ipsum veritatis?',
-    href: 'https://meingehirn.ninja/',
+    href: '/',
     cta: 'Visit Website',
-    Icon: Smartphone,
+    Icon: Computer,
     background: (
       <div className="absolute inset-0 bg-cyan-950/40 blur-2xl animate-pulse" />
     ),

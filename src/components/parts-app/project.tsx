@@ -168,6 +168,9 @@ const Projects = () => {
           </div>
 
           <div className="w-full h-fit py-2 flex flex-col gap-y-2">
+            <span className="text-sm text-gray-500">
+              {modal.project?.details.duration}
+            </span>
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-semibold text-gray-800">
                 {['Company'].includes(modal.project?.details.type as string)
