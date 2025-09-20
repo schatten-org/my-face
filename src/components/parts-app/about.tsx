@@ -98,8 +98,7 @@ const About = () => {
           >
             Japanese
           </TextHighlighter>
-          , so wish me luck, one day I’ll make it through anime without subs.
-          Until then… Google-sensei and AI got my back 😂.
+          , so wish me luck, one day I’ll make it through anime without subs 🤩
         </p>
       </div>
 

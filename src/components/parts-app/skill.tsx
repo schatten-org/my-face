@@ -412,9 +412,9 @@ const Skill = () => {
             ref={descRef}
             className="text-gray-300 text-sm md:text-base max-w-xl mx-auto leading-relaxed"
           >
-            Think of this less as my skills and more like my tech exes stuff
-            I’ve used before, sometimes seriously, sometimes just a fling.
-            Mastery? Eh… let’s not go that far 😂
+            Think of this less as my skills and more like my tech
+            situationships, used them before, sometimes serious, sometimes just
+            a fling. Mastery? LoL, let’s not go that far 🤣
           </p>
         </div>
 

@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Github, Linkedin, Mail } from 'lucide-react'
+import { Github, Instagram, Linkedin, Mail } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -104,6 +104,7 @@ const ContactSection = () => {
         </div>
         <div className="mt-12 flex justify-center gap-6">
           <a
+            arial-label="GitHub"
             href="https://github.com/bluntswordman"
             target="_blank"
             className="text-gray-400 hover:text-cyan-400 transition transform hover:scale-110"
@@ -111,6 +112,7 @@ const ContactSection = () => {
             <Github className="w-7 h-7 drop-shadow-[0_0_10px_#22d3ee]" />
           </a>
           <a
+            arial-label="LinkedIn"
             href="https://www.linkedin.com/in/bedy-briliant-wijaya/"
             target="_blank"
             className="text-gray-400 hover:text-pink-400 transition transform hover:scale-110"
@@ -118,6 +120,15 @@ const ContactSection = () => {
             <Linkedin className="w-7 h-7 drop-shadow-[0_0_10px_#ec4899]" />
           </a>
           <a
+            arial-label="Instagram"
+            href="https://www.instagram.com/_brln.by/"
+            target="_blank"
+            className="text-gray-400 hover:text-indigo-400 transition transform hover:scale-110"
+          >
+            <Instagram className="w-7 h-7 drop-shadow-[0_0_10px_#818cf8]" />
+          </a>
+          <a
+            arial-label="Email"
             href="mailto:wijaya.bedybriliant@gmail.com"
             className="text-gray-400 hover:text-purple-400 transition transform hover:scale-110"
           >

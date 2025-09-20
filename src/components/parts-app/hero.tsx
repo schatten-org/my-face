@@ -90,6 +90,7 @@ const Hero = () => {
           aria-label="Bedy Briliant Wijaya"
           className="text-center"
         >
+          <span className="sr-only">Bedy Briliant Wijaya</span>
           <ParticleText
             text="Bedy Briliant Wijaya"
             particleCount={150}
